@@ -210,3 +210,50 @@ a.chunky:focus-visible,a.small-btn:focus-visible{outline:4px solid var(--sun);ou
 @keyframes ajak{50%{transform:scale(1.08)}}
 .small-btn.minta{background:var(--sun);animation:ajak 1s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.small-btn.minta{animation:none}}
+
+/* KARTU PEMBAHASAN setelah menjawab: besar, langsung terlihat, tanpa pilihan jawaban yang menutupi */
+.question-card.bahas{gap:clamp(8px,1.6cqw,16px);max-height:none;flex:1 1 auto;min-height:62%;background:#eafbe6;border-color:var(--hijau)}
+.question-card.bahas.bad{background:#fff1f2;border-color:var(--merah)}
+.mode-1 .question-card.bahas{width:58%;max-height:100%}
+.mode-4 .question-card.bahas{width:72%}
+.bahas-hasil{display:flex;flex-wrap:wrap;align-items:baseline;gap:.2em .6em}
+.bahas-hasil b{font-family:var(--display);font-weight:800;font-size:clamp(22px,6.4cqw,52px);line-height:1;color:var(--hijau)}
+.question-card.bad .bahas-hasil b{color:var(--merah)}
+.bahas-hasil span{font-weight:800;font-size:clamp(14px,3.6cqw,26px)}
+.bahas-soal{margin:0;font-weight:700;font-size:clamp(13px,3.2cqw,22px);line-height:1.35;opacity:.85}
+.bahas-kunci{display:flex;flex-direction:column;gap:6px}
+.kunci-baris{display:flex;align-items:center;gap:.6em;background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:.25em .6em;font-size:clamp(14px,3.8cqw,30px);font-weight:800;line-height:1.25}
+.kunci-baris b{flex:none;font-family:var(--display);border-radius:99px;padding:.05em .6em;background:#9be58a}
+.kunci-baris.no b{background:#ff9aa0}
+.kunci-baris span{min-width:0}
+.kunci-baris svg{display:block;max-height:clamp(46px,12cqw,100px);max-width:100%}
+.bahas-isi{display:flex;align-items:flex-start;gap:clamp(8px,2cqw,18px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;padding:clamp(8px,1.8cqw,16px)}
+.bahas-isi p{margin:0;flex:1;font-size:clamp(15px,4.2cqw,32px);line-height:1.4;font-weight:700}
+.bahas-isi p b{display:block;font-family:var(--display);font-size:.8em;text-transform:uppercase;letter-spacing:.06em;color:var(--biru)}
+.bahas-gambar{flex:0 0 38%;max-width:340px}
+.bahas-gambar svg{display:block;width:100%;height:auto;max-height:clamp(110px,30cqw,260px)}
+.question-card.bahas .next-block{align-self:stretch;font-size:clamp(16px,4.2cqw,32px);min-height:clamp(48px,10cqw,84px)}
+.next-block .hitung{display:inline-grid;place-items:center;min-width:1.7em;margin-left:.4em;border-radius:99px;background:var(--ink);color:var(--paper);font-size:.8em}
+/* gambar soal lebih besar supaya mudah diamati */
+.question-figure{flex:0 0 40%;max-width:340px}
+.question-figure svg{max-height:clamp(110px,32cqw,260px)}
+@media (max-width:700px){.bahas-isi{flex-direction:column}.bahas-gambar{flex:none;width:70%;align-self:center}}
+/* 4 pemain: kartu pembahasan menutup seluruh arena pemain itu dan memakai huruf yang lebih ringkas supaya muat */
+.mode-4 .question-card.bahas{position:absolute;inset:0;width:auto;min-height:0;margin:0;z-index:6;justify-content:flex-start;gap:clamp(4px,1cqw,10px);padding:clamp(8px,1.4cqw,16px)}
+.mode-4 .bahas-soal{display:none}
+.mode-4 .bahas-hasil b{font-size:clamp(18px,4.2cqw,38px)}
+.mode-4 .bahas-hasil span{font-size:clamp(12px,2.4cqw,20px)}
+.mode-4 .kunci-baris{font-size:clamp(12px,2.6cqw,22px);border-width:2px;padding:.15em .5em}
+.mode-4 .bahas-isi{padding:clamp(6px,1.2cqw,12px)}
+.mode-4 .bahas-isi p{font-size:clamp(13px,2.8cqw,24px)}
+.mode-4 .bahas-gambar{flex-basis:30%}
+.mode-4 .bahas-gambar svg{max-height:clamp(70px,17cqw,150px)}
+.mode-4 .question-card.bahas .next-block{font-size:clamp(14px,2.8cqw,24px);min-height:clamp(40px,7cqw,64px)}
+.arena:has(.question-card.bahas:not([hidden])) .robot-bubble{display:none}
+.kunci-baris span{flex:1}
+.kunci-baris span svg{width:auto;max-width:min(100%,220px)}
+.mode-4 .kunci-baris span svg{max-height:clamp(40px,9cqw,80px)}
+.mode-4 .bahas-isi p{font-size:clamp(12px,2.3cqw,20px)}
+/* tombol lanjut selalu terlihat walau isi pembahasan panjang */
+.question-card.bahas .next-block{position:sticky;bottom:0;flex:none;margin-top:auto}
+.mode-4 .bahas-gambar svg{max-height:clamp(50px,11cqw,100px)}
