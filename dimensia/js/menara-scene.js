@@ -22,11 +22,11 @@ const MenaraScene=(()=>{
     garis.rotation.copy(body.rotation);add(g,garis,0,h/2);
     return g;
   }
-  function lights(scene){scene.add(new THREE.HemisphereLight('#fff9ee','#668fa5',.85));const sun=new THREE.DirectionalLight('#fff0d4',.55);sun.position.set(-4,9,8);scene.add(sun)}
+  function lights(scene){const hemi=new THREE.HemisphereLight('#fff9ee','#668fa5',.85);scene.add(hemi);const sun=new THREE.DirectionalLight('#fff0d4',.55);sun.position.set(-4,9,8);scene.add(sun);return hemi}
   function tree(scene,x,z,scale=1){const g=new THREE.Group();add(g,cylinder(.07,.8,7,'#a86b32'),0,.4);add(g,new THREE.Mesh(geo('tree',()=>new THREE.ConeGeometry(.48,1.2,7)),mat('#1f9d55')),0,1.15);g.position.set(x,0,z);g.scale.setScalar(scale);scene.add(g)}
-  function create(el,character=0,home=false){
+  function create(el,character=0,home=false,color='#ffc93c'){
     const pick=home==='pick';home=!!home;
-    const scene=new THREE.Scene();scene.background=null; /* langit biru halaman terlihat di belakang arena */lights(scene);
+    const scene=new THREE.Scene();scene.background=null; /* langit biru halaman terlihat di belakang arena */const hemi=lights(scene);let seru=null;
     const camera=new THREE.OrthographicCamera(-6,6,5,-5,.1,300),tower=new THREE.Group();scene.add(tower);
     if(!pick){add(scene,cylinder(home?7:3.35,.38,48,'#4aa84f'),0,-.35);add(scene,cylinder(home?6.7:3.18,.12,48,'#8fd46a'),0,-.1)}
     if(!home){add(scene,box(4.7,.16,2.5,'#fff8e8'),0,.02);tree(scene,-2.65,-.5,.75);tree(scene,2.7,-.7,.95)}
@@ -37,10 +37,14 @@ const MenaraScene=(()=>{
       heights.forEach((count,i)=>{let y=0;for(let j=0;j<count;j++){const s=MenaraCore.shape(700+i*19,j),building=house(s);building.position.set((i-2)*1.75,y,-2.1+(i%2)*.7);building.scale.set(.78,1,.78);scene.add(building);y+=s.height}});
       for(let i=0;i<4;i++){const b=RB.buat(ROBOT[i].id);b.g.position.set((i-1.5)*2.9,.1,2.6);b.g.scale.setScalar(.72);scene.add(b.g);bots.push(b);add(scene,cylinder(.95,.2,32,palette[i]),(i-1.5)*2.9,0,2.6)}
       tree(scene,-5,-1,1.2);tree(scene,5,-.5,1.4);
-    }else{const b=RB.buat(ROBOT[character].id);b.g.scale.setScalar(.76);b.g.position.set(2.5,.15,1.4);scene.add(b.g);bots.push(b)}
+    }else{/* ROBOT KOMANDAN: berdiri di panggung bundar berwarna tim, ikut besar-kecil bersama robotnya */
+      const b=RB.buat(ROBOT[character].id);scene.add(b.g);bots.push(b);
+      add(b.g,cylinder(1.05,.22,40,color),0,-.11);const cincin=add(b.g,new THREE.Mesh(geo('cincin',()=>new THREE.TorusGeometry(1.12,.06,8,48)),mat('#ffffff')),0,0);cincin.rotation.x=Math.PI/2;
+      /* tanda seru merah di atas kepala saat gempa */
+      seru=new THREE.Group();add(seru,box(.26,.8,.26,'#e8323c'),0,.62);add(seru,new THREE.Mesh(geo('titikseru',()=>new THREE.SphereGeometry(.17,12,8)),mat('#e8323c')),0,0);seru.position.set(0,3.2,0);seru.visible=false;b.g.add(seru)}
     // Awan di belakang menara; seluruh dekorasi dibuat tanpa tekstur dari internet.
     for(let i=0;i<5;i++){const cloud=new THREE.Group();for(let j=0;j<3;j++){const m=new THREE.Mesh(geo('cloud',()=>new THREE.SphereGeometry(1,12,8)),mat('#ffffff'));m.scale.set(.8,.28,.45);add(cloud,m,j*.7,Math.sin(j)*.13)}cloud.position.set(-10+i*4,5+(i%3)*2,-12);scene.add(cloud)}
-    return {el,scene,camera,tower,home,pick,selected:0,bots,meshes:[],loose:[],incoming:null,incomingKey:'',follow:0,targetY:0,drag:null,anim:null,robotMood:'idle'};
+    return {el,scene,camera,tower,home,pick,hemi,seru,komandan:!home&&!pick,selected:0,bots,meshes:[],loose:[],incoming:null,incomingKey:'',follow:0,targetY:0,drag:null,anim:null,robotMood:'idle'};
   }
   function sync(v,p){
     while(v.meshes.length>p.blocks.length){const m=v.meshes.pop();v.tower.remove(m);v.scene.add(m);m.position.y+=.1;v.loose.push({mesh:m,vy:2,vx:(Math.random()-.5)*4,life:1.1})}
@@ -51,6 +55,20 @@ const MenaraScene=(()=>{
   function project(v,point){const p=point.clone().project(v.camera),b=v.el.getBoundingClientRect();return{x:(p.x+1)*b.width/2,y:(1-p.y)*b.height/2}}
   function drag(v,p,clientX,clientY){if(!v.incoming)return;const b=v.el.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((clientX-b.left)/b.width*2-1,-((clientY-b.top)/b.height)*2+1),v.camera);const pos=new THREE.Vector3();if(ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0,0,1),0),pos)){v.incoming.position.x=Math.max(-3.6,Math.min(3.6,pos.x));v.incoming.position.y=Math.max(MenaraCore.height(p)+.6,Math.min(MenaraCore.height(p)+4,pos.y-p.next.height*.55))}}
   function drop(v,p,onLand){if(!v.incoming||v.anim)return;const x=v.incoming.position.x,hit=MenaraCore.landing(p,x);v.anim={from:v.incoming.position.clone(),target:hit.ok?new THREE.Vector3(hit.x,MenaraCore.height(p),0):new THREE.Vector3(-2.15,MenaraCore.height(p)+2.75,0),elapsed:0,duration:hit.ok?.48:.6,done:onLand,hit,x};}
+  /* Posisi komandan dihitung dari kamera (koordinat layar), jadi selalu terlihat apa pun ukuran arenanya.
+     Saat membangun: di pojok kanan bawah. Saat gempa/soal: melompat ke depan, jauh lebih besar, panik dengan tanda seru. */
+  const sinarKomandan=new THREE.Raycaster(),bidangDepan=new THREE.Plane(new THREE.Vector3(0,0,1),-2);
+  function komandan(v,r,p,t,dt,span,aspect,motion){
+    const panik=p.phase==='question'||p.phase==='feedback',sempit=aspect<1;
+    const tuju=panik?{x:sempit?-.1:-.52,y:-.95,h:sempit?.9:.86,w:sempit?.98:.45}:{x:sempit?.6:.74,y:-.74,h:.35,w:sempit?.42:.26},tinggiBadan=panik?4.1:2.7; /* saat panik tanda seru ikut dihitung supaya tidak terpotong */
+    sinarKomandan.setFromCamera(new THREE.Vector2(tuju.x,tuju.y),v.camera);const pos=new THREE.Vector3();if(!sinarKomandan.ray.intersectPlane(bidangDepan,pos))return;
+    const s=Math.min(2*span*tuju.h/tinggiBadan,2*span*aspect*tuju.w/2.4),k=v.siapKomandan?Math.min(1,dt*(panik?9:5)):1;v.siapKomandan=true;
+    r.g.position.lerp(pos,k);r.g.scale.setScalar(r.g.scale.x+(s-r.g.scale.x)*k);
+    r.g.rotation.y+=((panik?.32:-.2)+(panik&&motion?Math.sin(t*16)*.12:0)-r.g.rotation.y)*Math.min(1,k*2);
+    if(v.seru){v.seru.visible=p.phase==='question';v.seru.position.y=3.2+(motion?Math.abs(Math.sin(t*8))*.25:0);v.seru.rotation.z=motion?Math.sin(t*14)*.18:0}
+    /* lampu alarm: cahaya memerah berdenyut selama soal */
+    const a=p.phase==='question'&&motion?.5+.5*Math.sin(t*9):0;v.hemi.color.setRGB(1,.976-.36*a,.933-.42*a);
+  }
   function update(v,p,t,dt,motion=true){
     if(p)sync(v,p);
     const h=p?MenaraCore.height(p):5;
@@ -62,7 +80,7 @@ const MenaraScene=(()=>{
     v.tower.position.x=p?.phase==='question'&&motion?Math.sin(t*28)*.055:0;
     v.tower.rotation.z=p?.phase==='question'&&motion?Math.sin(t*19)*.009:0;
     v.meshes.forEach(m=>m.visible=m.position.y>v.follow-5);
-    v.bots.forEach((r,i)=>{r.upd(motion?t:t*.2);if(v.pick){const k=i===v.selected?1.18:.9;r.g.scale.setScalar(r.g.scale.x+(k-r.g.scale.x)*.18);r.g.rotation.y=Math.sin(t*.6+i)*.2}else if(!v.home){r.g.position.y=v.follow+.1;r.g.rotation.y=-.25}else r.g.rotation.y=.2+Math.sin(t*.6+i)*.15});
+    v.bots.forEach((r,i)=>{r.upd(motion?t:t*.2);if(v.pick){const k=i===v.selected?1.18:.9;r.g.scale.setScalar(r.g.scale.x+(k-r.g.scale.x)*.18);r.g.rotation.y=Math.sin(t*.6+i)*.2}else if(v.komandan){if(p)komandan(v,r,p,t,dt,span,aspect,motion)}else r.g.rotation.y=.2+Math.sin(t*.6+i)*.15});
     if(v.anim){const a=v.anim;a.elapsed+=dt;const u=Math.min(1,a.elapsed/a.duration);if(a.hit.ok)v.incoming.position.lerpVectors(a.from,a.target,u*u);else{const k=Math.max(0,(u-.45)/.55);v.incoming.position.lerpVectors(a.from,a.target,k*k*(3-2*k));v.incoming.rotation.z=Math.sin(u*Math.PI*5)*.16*(1-u)}if(u===1){v.anim=null;v.incoming.rotation.z=0;a.done(a.x,a.hit)}}
     v.loose=v.loose.filter(item=>{item.life-=dt;item.vy-=dt*12;item.mesh.position.y+=item.vy*dt;item.mesh.position.x+=item.vx*dt;item.mesh.rotation.z+=dt*1.2;if(item.life<=0){v.scene.remove(item.mesh);return false}return true});
     if(v.incoming&&p&&!v.anim){const pos=project(v,v.incoming.position.clone().add(new THREE.Vector3(0,p.next.height*.55,.3)));const handle=v.el.querySelector('.piece-handle');if(handle){handle.style.left=pos.x+'px';handle.style.top=pos.y+'px'}}
