@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="DIMENSIA: Petualangan di Dunia Bentuk. Laboratorium geometri 3D untuk latihan TKA Matematika SD.">
+<meta name="theme-color" content="#9fdcff">
+<title>DIMENSIA · Petualangan di Dunia Bentuk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="css/dimensia.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="gelap">
+<canvas id="gl"></canvas>
+
+<!-- LAYAR PEMBUKA -->
+<section id="home" class="layar">
+  <header class="judul">
+    <h1>DIMENSIA</h1>
+    <p>Petualangan di Dunia Bentuk</p>
+    <div class="slogan">Putar! Bongkar! Susun! Temukan Rahasianya!</div>
+  </header>
+  <div id="homeStage"></div>
+  <div id="kartu" class="kartu-robot"></div>
+  <footer class="home-bawah">
+    <button class="btn utama besar" id="mulai">MULAI PETUALANGAN</button>
+    <div class="baris">
+      <button class="btn kecil" id="bMusik">Musik</button>
+      <button class="btn kecil" id="bFx">Efek suara</button>
+      <button class="btn kecil" id="bFs">Layar penuh</button>
+      <a class="btn kecil" href="../index.html#3" data-book-return>Kembali ke buku</a>
+    </div>
+  </footer>
+</section>
+
+<!-- PILIH MODE DAN MISI -->
+<section id="pilih" class="layar" hidden>
+  <div class="pilih-atas">
+    <button class="btn kecil" id="keHome">Kembali</button>
+    <h2>Pilih cara bermain</h2>
+    <div class="grup"><span>Tingkat</span><span id="lvBtns"></span></div>
+  </div>
+  <div class="mode-grid">
+    <div class="mode">
+      <h3>Kota Langit <i class="baru">Baru</i></h3>
+      <p>Lomba menumpuk bangun ruang dengan seimbang untuk 1, 2, atau 4 pemain. Tiap 3 bangun datang gempa dan soal geometri.</p>
+      <a class="btn pil utama" href="kota-langit.html"><b>Main Kota Langit</b><small>Tumpuk, seimbangkan, dan jawab soal</small></a>
+    </div>
+    <div class="mode">
+      <h3>Lab Bebas</h3>
+      <p>Tanpa waktu dan tanpa nilai. Belajar bertahap: bangun datar 2D dulu, baru bangun ruang 3D.</p>
+      <button class="btn pil" data-mulai="lab:poligon"><b><i class="tahap">1 · 2D</i> Lab Bangun Datar 2D</b><small>Pilih bangunnya, pelajari sisi, keliling, dan luas</small></button>
+      <button class="btn pil" data-mulai="lab:kubus"><b><i class="tahap">2 · 3D</i> Lab Kubus Tersembunyi</b><small>Putar, bedah, dan hitung susunan kubus</small></button>
+    </div>
+    <div class="mode">
+      <h3>Petualangan Misi</h3>
+      <p>Buat dugaan, selidiki dengan alat, lalu kunci jawaban. Tiap misi 3 soal.</p>
+      <button class="btn pil" data-mulai="misi:pgk"><b><i class="tahap">2D</i> Benar atau Salah</b><small>Museum Bangun Datar: sisi, keliling, luas</small><i class="bintang" data-b="pgk"></i></button>
+      <button class="btn pil" data-mulai="misi:hitung"><b><i class="tahap">3D</i> Hitung Susunannya</b><small>Laboratorium Kubus Tersembunyi</small><i class="bintang" data-b="hitung"></i></button>
+      <button class="btn pil" data-mulai="misi:tampak"><b><i class="tahap">3D</i> Kamera Ajaib</b><small>Observatorium Tiga Sudut Pandang</small><i class="bintang" data-b="tampak"></i></button>
+    </div>
+    <div class="mode">
+      <h3>Simulasi TKA</h3>
+      <p>6 soal PG dan PGK-Kategori. Gambar tetap dan alat terkunci. Pembahasan dibuka setelah selesai.</p>
+      <button class="btn pil" data-mulai="tka:"><b>Mulai simulasi</b><small>6 soal campuran</small></button>
+      <button class="btn kecil" id="bTimer" aria-pressed="true">Timer 10 menit</button>
+    </div>
+  </div>
+</section>
+
+<!-- LAYAR PERMAINAN -->
+<section id="main" hidden>
+  <div class="atas">
+    <button class="btn kecil" id="keluar">Keluar</button>
+    <div id="pemandu"></div>
+    <div id="ucap" role="status"></div>
+    <div class="info" id="info"></div>
+  </div>
+  <div class="tengah">
+    <div id="stage">
+      <div id="stage3d"></div>
+      <div id="stage2d" hidden><svg id="svg2d" xmlns="http://www.w3.org/2000/svg"></svg></div>
+      <div id="hud"></div>
+      <div id="mini" hidden></div>
+    </div>
+    <aside id="panel" hidden></aside>
+  </div>
+  <div class="bawah" id="alat3d">
+    <div class="grup"><span>Putar</span>
+      <button class="btn" data-a="kiri" aria-label="Putar kiri">◀</button><button class="btn" data-a="kanan" aria-label="Putar kanan">▶</button>
+      <button class="btn" data-a="zmin" aria-label="Perkecil">−</button><button class="btn" data-a="zplus" aria-label="Perbesar">+</button>
+      <button class="btn" data-a="reset">Reset</button></div>
+    <div class="grup"><span>Kamera Ajaib</span>
+      <button class="btn" data-v="3d">3D</button><button class="btn" data-v="depan">Depan</button><button class="btn" data-v="atas">Atas</button><button class="btn" data-v="samping">Samping</button></div>
+    <div class="grup"><span>Bedah 3D</span>
+      <button class="btn" data-t="bedah">Bedah lapisan</button><button class="btn" data-t="ledak">Ledakkan</button><button class="btn" data-t="trans">Transparan</button></div>
+    <div class="grup"><span>Pindai lapisan</span><span id="pindaiBtns" class="rapat"></span></div>
+    <div class="grup"><span>Hitung</span><output id="nHitung">0</output><button class="btn" data-a="hapus">Hapus</button></div>
+    <div class="grup khusus-lab"><span>Lab</span>
+      <button class="btn" data-a="periksa">Periksa hitungan</button><button class="btn" data-a="baru">Bangun baru</button><button class="btn" data-a="contoh">Contoh 15 kubus</button></div>
+  </div>
+  <div class="bawah pilih-bangun" id="pilihBangun" hidden role="group" aria-label="Pilih bangun datar"></div>
+  <div class="bawah" id="alat2d" hidden>
+    <div class="grup"><span>Pelajari</span>
+      <button class="btn" data-t="sisi">Nomor sisi</button><button class="btn" data-t="panjang">Panjang sisi</button>
+      <button class="btn" data-t="keliling">Keliling</button><button class="btn" data-t="luas">Luas</button></div>
+    <div class="grup"><span>Hitung sisi</span><output id="nHitung2">0</output><button class="btn" data-a="hapus">Hapus</button></div>
+    <div class="grup khusus-lab"><span>Lab</span><button class="btn" data-a="periksa">Periksa hitungan</button><button class="btn" data-a="ukuran">Ukuran lain</button></div>
+  </div>
+</section>
+
+<div id="hasil" class="tirai" hidden><div class="kotak" id="hasilIsi"></div></div>
+<div id="galat" class="tirai" hidden><div class="kotak"><h2>Grafis 3D belum bisa dimuat</h2><p>Sambungkan internet sekali, atau taruh <b>three.min.js</b> (r128) di folder <b>vendor</b>.</p></div></div>
+
+<!-- three.js r128: file lokal di ../vendor/ jika ada, kalau tidak ambil dari CDN -->
+<script src="../vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script>if(!window.THREE)document.getElementById('galat').hidden=false</script>
+<script src="js/kubus-data.js"></script>
+<script src="js/poligon-data.js"></script>
+<script src="js/arena3d.js"></script>
+<script src="js/robot.js"></script>
+<script src="js/arena2d.js"></script>
+<script src="js/main.js"></script>
+<script src="../js/transisi-buku.js"></script>
+</body>
+</html>

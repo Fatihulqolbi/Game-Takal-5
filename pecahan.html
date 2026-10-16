@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Laskar Pecahan: game 3D latihan TKA Matematika SD bab Pecahan untuk 1, 2, atau 4 pemain.">
+<meta name="theme-color" content="#9fdcff">
+<title>Laskar Pecahan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/transisi-buku.css">
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<button id="snd" aria-pressed="true" aria-label="Suara"><svg viewBox="0 0 24 24" fill="none" stroke="#1e2a4a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#ffc93c"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6" hidden/></svg></button>
+
+<section id="menu" class="screen">
+  <div class="logo">
+    <h1>Laskar <span>Pecahan</span></h1>
+    <p>Latihan TKA Matematika SD · Bab Pecahan</p>
+  </div>
+  <div id="menuStage" style="flex:1;width:100%"></div>
+  <div class="menu-bottom">
+    <div class="chips" id="topics"></div>
+    <div class="modes">
+      <button class="chunky mode" id="b1"><span class="dots"><i style="background:var(--merah)"></i></span>1 Pemain</button>
+      <button class="chunky mode" id="b2"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i></span>2 Pemain</button>
+      <button class="chunky mode" id="b4"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i><i style="background:var(--hijau)"></i><i style="background:var(--oranye)"></i></span>4 Pemain</button>
+    </div>
+    <div class="rules" id="rules"></div>
+    <div class="row">
+      <button class="small-btn" id="fs">Layar penuh</button>
+      <a class="small-btn" href="index.html#2" data-book-return>Kembali ke buku</a>
+    </div>
+  </div>
+</section>
+
+<section id="select" class="screen" hidden>
+  <div class="sel-head" id="selHead"><span class="pl">Pemain 1</span>, pilih jagoanmu!</div>
+  <div id="selStage"></div>
+  <div class="cards" id="cards"></div>
+  <div class="sel-actions">
+    <button class="small-btn" id="selBack">Kembali</button>
+    <button class="chunky go" id="selGo">Siap!</button>
+  </div>
+</section>
+
+<section id="setup" class="screen" hidden>
+  <div class="sheet">
+    <h2>Persiapan bertanding</h2>
+    <div class="setup-grid">
+      <div class="col">
+        <div class="field"><span class="lbl">Nama kelompok</span><div class="col" id="names"></div></div>
+        <div class="field"><span class="lbl">Musik &amp; suara</span>
+          <div class="chips" id="themeChips"></div>
+          <div class="toggles"><button class="chip" id="musT">Musik</button><button class="chip" id="fxT">Efek suara</button></div>
+          <label class="hint" for="volume">Volume <output id="volumeVal">85%</output></label>
+          <input id="volume" type="range" min="0" max="100" value="85" aria-label="Volume permainan">
+        </div>
+      </div>
+      <div class="col">
+        <div class="field"><span class="lbl">Lama permainan</span>
+          <div class="row-ctl"><div class="chips" id="durChips"></div>
+            <div class="stepper"><button id="durMinus" aria-label="Kurangi">−</button><output id="durVal"></output><button id="durPlus" aria-label="Tambah">+</button></div></div>
+        </div>
+        <div class="field"><span class="lbl">Waktu tiap soal</span>
+          <div class="row-ctl"><div class="chips" id="qtChips"></div>
+            <div class="stepper"><button id="qtMinus" aria-label="Kurangi">−</button><output id="qtVal"></output><button id="qtPlus" aria-label="Tambah">+</button></div></div>
+          <p class="hint">Bawaan 30 detik.</p>
+        </div>
+        <div class="field"><span class="lbl">Kalau jawaban salah</span>
+          <div class="chips" id="penChips"></div>
+          <p class="hint">Poin tidak akan turun di bawah 0. Benar tetap +5.</p>
+        </div>
+      </div>
+    </div>
+    <div class="setup-actions">
+      <button class="small-btn" id="setBack">Kembali</button>
+      <button class="chunky go" id="setGo">Mulai!</button>
+    </div>
+  </div>
+</section>
+
+<section id="game" hidden>
+  <div class="topbar">
+    <div class="left"><button class="small-btn" id="pauseBtn">Jeda</button></div>
+    <div class="sclock" id="sclock">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1e2a4a" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5M12 2.5v3"/></svg>
+      <div><div class="lbl">Sisa waktu</div><b id="stime">05:00</b></div>
+    </div>
+    <div></div>
+  </div>
+  <div class="sbar" id="sbar"><i id="sbarFill"></i></div>
+  <div id="panelsWrap">
+    <div id="panels"></div>
+    <div class="vs" id="vs">VS</div>
+  </div>
+</section>
+
+<section id="podium" class="screen" hidden>
+  <div class="pod-title"><h2 id="podTitle">Selamat!</h2><p id="podSub"></p></div>
+  <div class="pod-bottom">
+    <div class="res" id="podCards"></div>
+    <div class="row">
+      <button class="chunky btn green" id="again">Main lagi</button>
+      <button class="chunky btn" id="openReview" style="background:var(--sun)">Soal &amp; Pembahasan</button>
+      <button class="chunky btn" id="toSetup">Pengaturan</button>
+      <button class="chunky btn" id="toMenu">Menu</button>
+    </div>
+  </div>
+</section>
+
+<div id="big"></div>
+<div id="toast" role="status"></div>
+
+<div class="overlay" id="review" hidden>
+  <div class="box review-box">
+    <div class="review-head">
+      <h2>Soal &amp; Pembahasan</h2>
+      <div class="row" style="justify-content:flex-end">
+        <button class="chunky btn green" id="dlFull" style="font-size:clamp(15px,1.5vw,22px)">Unduh soal + pembahasan</button>
+        <button class="chunky btn" id="dlSheet" style="font-size:clamp(15px,1.5vw,22px)">Unduh lembar latihan</button>
+        <button class="small-btn" id="closeReview">Tutup</button>
+      </div>
+    </div>
+    <div class="review-body" id="reviewBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="pause" hidden>
+  <div class="box">
+    <h2>Istirahat dulu</h2>
+    <p style="margin:0">Waktu permainan berhenti sementara.</p>
+    <div class="row">
+      <button class="chunky btn green" id="resume">Lanjut</button>
+      <button class="chunky btn" id="finish">Selesai &amp; lihat juara</button>
+    </div>
+  </div>
+</div>
+
+<!-- three.js r128: pakai file lokal di vendor/ jika ada (untuk offline), kalau tidak ada ambil dari CDN -->
+<script src="vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script src="js/soal.js"></script>
+<script src="js/grafis3d.js"></script>
+<script src="js/game.js"></script>
+<script src="js/transisi-buku.js"></script>
+</body>
+</html>
