@@ -79,3 +79,17 @@ test('Kota Langit: pengaturan Soal 2D, Soal 3D, atau keduanya',()=>{
   for(const jenis of['2d','3d']){const d=Q.deck(11,2,jenis),semua=Q.pilihan(jenis);assert(semua.length>=8);for(let i=0;i<80;i++)assert.equal(Q.dimensi(d.next().template),jenis)}
   assert.equal(Q.pilihan('2d').length+Q.pilihan('3d').length,Q.templates.length);
 });
+test('Lab Bangun Ruang: volume dan luas permukaan semua bangun cocok dengan rumus baku',()=>{
+  const D=require('../dimensia/js/ruang-data.js');assert.deepEqual(D.BENTUK.map(b=>b.id),['kubus','balok','prisma','limas','tabung','kerucut','bola']);
+  const PI=r=>r%7===0?22/7:3.14,dekat=(a,b,m)=>assert(Math.abs(a-b)<1e-9,m+': '+a+' ≠ '+b);
+  for(const b of D.BENTUK){const daftar=[{}];for(const c of b.ukuran){const nilai=c.pilih?c.pilih.map((_,i)=>i):Array.from({length:c.maks-c.min+1},(_,i)=>c.min+i);const baru=[];for(const d of daftar)for(const v of nilai)baru.push({...d,[c.k]:v});daftar.splice(0,daftar.length,...baru)}
+    for(const pil of daftar){const u=D.ukuran(b.id,pil),H=D.hitung(b.id,u),m=b.id+JSON.stringify(u);let V,L;
+      switch(b.id){case'kubus':V=u.s**3;L=6*u.s**2;break;case'balok':V=u.p*u.l*u.t;L=2*(u.p*u.l+u.p*u.t+u.l*u.t);break;
+        case'prisma':assert.equal(u.a**2+u.b**2,u.c**2);V=u.a*u.b/2*u.t;L=u.a*u.b+(u.a+u.b+u.c)*u.t;break;
+        case'limas':assert.equal((u.s/2)**2+u.t**2,u.m**2);V=u.s*u.s*u.t/3;L=u.s*u.s+2*u.s*u.m;break;
+        case'tabung':V=PI(u.r)*u.r**2*u.t;L=2*PI(u.r)*u.r*(u.r+u.t);break;
+        case'kerucut':assert.equal(u.r**2+u.t**2,u.s**2);V=PI(u.r)*u.r**2*u.t/3;L=PI(u.r)*u.r*(u.r+u.s);break;
+        case'bola':V=4/3*PI(u.r)*u.r**3;L=4*PI(u.r)*u.r**2;break}
+      dekat(H.volume.nilai,V,m+' volume');dekat(H.luas.nilai,L,m+' luas');dekat(H.luas.bagian.reduce((s,x)=>s+x.nilai*x.banyak,0),L,m+' bagian');
+      assert(H.volume.langkah.at(-1).includes(D.angka(V)+' cm³'),m);assert(H.luas.langkah.at(-1).includes(D.angka(L)+' cm²'),m)}}
+});

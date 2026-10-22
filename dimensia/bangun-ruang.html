@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="DIMENSIA Lab Bangun Ruang: lihat cara menghitung volume dan luas permukaan kubus, balok, prisma, limas, tabung, kerucut, dan bola dalam 3D.">
+<meta name="theme-color" content="#9fdcff">
+<title>DIMENSIA · Lab Bangun Ruang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<!-- Tema bersama Laskar Pecahan, lalu tata letak khusus Lab Bangun Ruang -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/ruang.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="ruang">
+<header class="ruang-atas">
+  <a class="small-btn" href="index.html">Menu DIMENSIA</a>
+  <div class="logo kecil"><h1>Lab Bangun <span>Ruang</span></h1><p>Volume &amp; Luas Permukaan · 3D</p></div>
+  <div class="kanan"><button class="small-btn" id="fsRuang">Layar penuh</button><a class="small-btn" href="../index.html#3" data-book-return>Kembali ke buku</a></div>
+</header>
+<main class="ruang-isi">
+  <nav class="ruang-pilih" id="pilihRuang" aria-label="Pilih bangun ruang"></nav>
+  <section class="panggung" aria-label="Panggung 3D">
+    <div id="stageRuang"></div>
+    <div class="ruang-hud" id="hudRuang" role="status"></div>
+    <p class="geser-hint">Geser untuk memutar bangun</p>
+    <div class="robot-talk ruang-ucap" id="ucapRuang" role="status"></div>
+  </section>
+  <aside class="ruang-panel">
+    <div class="tab-ruang" role="tablist" aria-label="Pilih materi">
+      <button class="chip" role="tab" data-mode="volume">Volume</button>
+      <button class="chip" role="tab" data-mode="luas">Luas Permukaan</button>
+      <button class="chip" role="tab" data-mode="beda">Bedanya apa?</button>
+    </div>
+    <h2 id="judulRuang"></h2>
+    <div id="ukuranRuang" class="ukuran-ruang"></div>
+    <ol id="langkahRuang" class="langkah-ruang"></ol>
+    <div id="hasilRuang" class="hasil-ruang"></div>
+    <div class="aksi-ruang">
+      <button class="chunky go" id="mainRuang">Tunjukkan caranya ▶</button>
+      <button class="small-btn" id="akhirRuang">Lihat hasil akhir</button>
+    </div>
+  </aside>
+</main>
+<div id="galatRuang" class="overlay" hidden><div class="box"><h2>Grafis 3D belum tersedia</h2><p style="margin:0">Gunakan Chrome atau Edge dengan akselerasi grafis aktif, lalu muat ulang halaman.</p><div class="row"><a class="small-btn" href="index.html">Menu DIMENSIA</a></div></div></div>
+<script src="../vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script src="js/ruang-data.js"></script><script src="js/ruang-3d.js"></script><script src="js/ruang-ui.js"></script><script src="../js/transisi-buku.js"></script>
+</body>
+</html>
