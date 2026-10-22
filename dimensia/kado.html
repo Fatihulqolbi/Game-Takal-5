@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="DIMENSIA Lomba Bungkus Kado: isi kotak dengan permen sebanyak volumenya dan bungkus dengan kertas seluas permukaannya. Untuk 1, 2, atau 4 pemain.">
+<meta name="theme-color" content="#9fdcff">
+<title>DIMENSIA · Lomba Bungkus Kado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<!-- Tema bersama Laskar Pecahan, tata letak arena dari Kota Langit, lalu tambahan khusus Bungkus Kado -->
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/menara.css">
+<link rel="stylesheet" href="css/kado.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="kota kado">
+<canvas id="cityCanvas" aria-hidden="true"></canvas>
+<main>
+  <section id="home" class="screen">
+    <div class="logo">
+      <h1>Bungkus <span>Kado</span></h1>
+      <p>DIMENSIA · Lomba volume dan luas permukaan</p>
+    </div>
+    <div class="hero-world">
+      <div id="homeStage" class="scene-slot"></div>
+      <div id="robotTalk" class="robot-talk" role="status">Nova: “Isi permen sebanyak volumenya, bungkus seluas permukaannya!”</div>
+    </div>
+    <div class="menu-bottom">
+      <div class="chips robot-picks" aria-label="Sapa robot">
+        <button class="chip" data-hello="0"><i class="orbo-dot"></i>Orbo</button>
+        <button class="chip" data-hello="1"><i class="hexi-dot"></i>Hexi</button>
+        <button class="chip" data-hello="2"><i class="nova-dot"></i>Nova</button>
+        <button class="chip" data-hello="3"><i class="zipp-dot"></i>Zipp</button>
+      </div>
+      <div class="modes" role="group" aria-label="Jumlah pemain">
+        <button class="chunky mode" data-players="1"><span class="dots"><i style="background:var(--merah)"></i></span>1 Pemain</button>
+        <button class="chunky mode" data-players="2"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i></span>2 Pemain</button>
+        <button class="chunky mode" data-players="4"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i><i style="background:var(--hijau)"></i><i style="background:var(--oranye)"></i></span>4 Pemain</button>
+      </div>
+      <div class="rules">Isi permen sebanyak VOLUME · Bungkus kertas seluas LUAS PERMUKAAN · Kotak sempurna terbanyak menang</div>
+      <div class="row">
+        <button class="small-btn" id="soundHome" aria-pressed="true">Suara nyala</button>
+        <button class="small-btn" id="fsBtn">Layar penuh</button>
+        <a class="small-btn" href="bangun-ruang.html">Belajar dulu di Lab</a>
+        <a class="small-btn" href="index.html">Menu DIMENSIA</a>
+        <a class="small-btn" href="../index.html#3" data-book-return>Kembali ke buku</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="pick" class="screen" hidden>
+    <div class="sel-head" id="pickHead"><span class="pl">Pemain 1</span>, pilih robotmu!</div>
+    <div class="pick-world"><div id="pickStage" class="scene-slot"></div><div id="pickTalk" class="robot-talk" role="status"></div></div>
+    <div class="cards" id="pickCards"></div>
+    <div class="sel-actions">
+      <button class="small-btn" id="pickBack">Kembali</button>
+      <button class="chunky go" id="pickGo">Siap!</button>
+    </div>
+  </section>
+
+  <section id="setup" class="screen" hidden>
+    <form id="setupForm" class="sheet">
+      <h2>Persiapan toko kado <span id="modeBadge">1 pemain</span></h2>
+      <div class="setup-grid">
+        <div class="col">
+          <div class="field"><span class="lbl">Nama kelompok</span><div class="col" id="teamFields"></div></div>
+          <div class="field"><span class="lbl">Musik &amp; suara</span>
+            <div class="toggles">
+              <label class="cek"><input id="musicEnabled" type="checkbox" checked><span class="chip">Musik</span></label>
+              <label class="cek"><input id="fxEnabled" type="checkbox" checked><span class="chip">Efek suara</span></label>
+              <label class="cek"><input id="motionEnabled" type="checkbox" checked><span class="chip">Gerakan</span></label>
+            </div>
+            <label class="hint" for="volume">Volume <output id="volumeValue">85%</output></label>
+            <input id="volume" type="range" min="0" max="100" value="85" aria-label="Volume suara">
+          </div>
+        </div>
+        <div class="col">
+          <div class="field"><span class="lbl">Lama permainan</span>
+            <div class="row-ctl"><div class="chips" data-untuk="sessionMinutes" data-nilai="3,5,10,15" data-satuan="menit"></div>
+              <div class="stepper"><button type="button" data-untuk="sessionMinutes" data-langkah="-1" aria-label="Kurangi">−</button><input id="sessionMinutes" type="number" min="1" max="60" step="1" value="5" required aria-label="Lama permainan dalam menit"><span>menit</span><button type="button" data-untuk="sessionMinutes" data-langkah="1" aria-label="Tambah">+</button></div></div>
+          </div>
+          <div class="field"><span class="lbl">Tingkat pesanan</span>
+            <select id="level" data-chips aria-label="Tingkat pesanan"><option value="1">Penjelajah · kotak kecil, pelanggan sabar</option><option value="2" selected>Penyelidik · kotak sedang</option><option value="3">Ahli Dimensi · kotak besar, pelanggan buru-buru</option></select>
+          </div>
+          <p class="hint"><b>Cara main:</b> setiap pesanan punya 2 langkah. <b>1. Isi</b>: pilih banyak permen kubus 1 cm yang pas mengisi kotak (volume, cm³). <b>2. Bungkus</b>: pilih luas kertas kado yang pas menutup semua sisi (luas permukaan, cm²). Permen kebanyakan akan tumpah, kertas kurang membuat kotak bolong. Jawab sebelum pelanggan kehabisan sabar. Pelanggan berikutnya makin terburu-buru.</p>
+        </div>
+      </div>
+      <div class="setup-actions">
+        <button type="button" class="small-btn" id="setupBack">Kembali</button>
+        <button type="submit" class="chunky go start-btn">Buka toko!</button>
+      </div>
+    </form>
+  </section>
+
+  <section id="game" hidden>
+    <div class="topbar">
+      <div class="left"><button class="small-btn" id="pauseGame">Jeda</button></div>
+      <div class="sclock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#1e2a4a" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="13.5" r="8"/><path d="M12 9.5v4l2.5 2M9.5 2.5h5M12 2.5v3"/></svg>
+        <span class="lbl">Sisa<br>waktu</span><b id="sessionClock">05:00</b>
+      </div>
+      <div class="right"><button class="small-btn ikon" id="gameSound" aria-pressed="true" aria-label="Matikan suara"><svg viewBox="0 0 24 24" fill="none" stroke="#1e2a4a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#ffc93c"/><path class="on" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/><path class="off" d="M17 9l5 6M22 9l-5 6"/></svg></button></div>
+    </div>
+    <div class="sbar"><i id="sessionProgress"></i></div>
+    <div id="arenas" class="arenas mode-1"></div>
+  </section>
+
+  <section id="results" class="screen" hidden>
+    <div class="pod-title"><h2>Toko terbaik!</h2><p id="resultSubtitle"></p></div>
+    <div id="podium" class="podium scene-slot" role="img" aria-label="Panggung juara"></div>
+    <div id="resultTable" class="result-table"></div>
+    <div class="row">
+      <button id="playAgain" class="chunky btn green">Main lagi</button>
+      <button id="changeSettings" class="chunky btn">Pengaturan</button>
+      <a class="chunky btn" href="bangun-ruang.html">Lab Bangun Ruang</a>
+      <a class="chunky btn" href="index.html">Menu DIMENSIA</a>
+      <a class="chunky btn" href="../index.html#3" data-book-return>Kembali ke buku</a>
+    </div>
+    <p class="hint">Urutan juara: kotak sempurna, lalu jumlah langkah yang tepat, lalu paling sedikit pelanggan pergi.</p>
+  </section>
+</main>
+
+<div id="countdown" class="countdown-overlay" hidden><span>Toko dibuka!</span><b id="countdownNumber">3</b><p>Isi permen, lalu bungkus kotaknya.</p></div>
+
+<div id="pause" class="overlay" hidden>
+  <div class="box">
+    <h2>Istirahat dulu</h2>
+    <p style="margin:0">Waktu permainan dan kesabaran pelanggan berhenti sementara.</p>
+    <div class="row">
+      <button id="resumeGame" class="chunky btn green">Lanjut</button>
+      <button id="endGame" class="chunky btn">Selesai &amp; lihat juara</button>
+    </div>
+    <div class="row"><a class="small-btn" href="index.html">Menu DIMENSIA</a><a class="small-btn" href="../index.html#3" data-book-return>Kembali ke buku</a></div>
+  </div>
+</div>
+
+<div id="webglError" class="overlay" hidden>
+  <div class="box">
+    <h2>Grafis 3D belum tersedia</h2>
+    <p style="margin:0">Gunakan Chrome atau Edge dengan akselerasi grafis aktif, lalu muat ulang halaman.</p>
+    <div class="row"><a class="small-btn" href="index.html">Menu DIMENSIA</a></div>
+  </div>
+</div>
+
+<script src="../vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script src="js/menara-core.js"></script><script src="js/robot.js"></script><script src="js/menara-audio.js"></script><script src="js/menara-scene.js"></script><script src="js/kado-core.js"></script><script src="js/kado-scene.js"></script><script src="js/kado-game.js"></script><script src="js/menara-ui.js"></script><script src="../js/transisi-buku.js"></script>
+</body>
+</html>

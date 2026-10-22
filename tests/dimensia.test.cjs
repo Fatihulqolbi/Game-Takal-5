@@ -93,3 +93,15 @@ test('Lab Bangun Ruang: volume dan luas permukaan semua bangun cocok dengan rumu
       dekat(H.volume.nilai,V,m+' volume');dekat(H.luas.nilai,L,m+' luas');dekat(H.luas.bagian.reduce((s,x)=>s+x.nilai*x.banyak,0),L,m+' bagian');
       assert(H.volume.langkah.at(-1).includes(D.angka(V)+' cm³'),m);assert(H.luas.langkah.at(-1).includes(D.angka(L)+' cm²'),m)}}
 });
+test('Bungkus Kado: pesanan, pilihan, kesabaran, dan nilai kotak sempurna',()=>{
+  const K=require('../dimensia/js/kado-core.js');
+  for(let lv=1;lv<=3;lv++)for(let s=1;s<=200;s++)for(let i=0;i<10;i++){const o=K.pesanan(s*17,i,lv);
+    assert.equal(o.V,o.p*o.l*o.t);assert.equal(o.L,2*(o.p*o.l+o.p*o.t+o.l*o.t));if(o.kind==='kubus')assert(o.p===o.l&&o.l===o.t);
+    for(const[ops,b,ans]of[[o.opsiV,o.benarV,o.V],[o.opsiL,o.benarL,o.L]]){assert.equal(ops.length,4);assert.equal(new Set(ops).size,4);assert.equal(ops[b],ans);assert(ops.every(x=>Number.isInteger(x)&&x>0))}
+    assert(o.rumusV.endsWith('= '+o.V));assert(o.rumusL.endsWith('= '+o.L))}
+  for(let lv=1;lv<=3;lv++)for(let i=1;i<30;i++)assert(K.sabar(lv,i)<=K.sabar(lv,i-1)&&K.sabar(lv,i)>=10);
+  const p=K.player(0,'Tim',0,9,2);p.pilihV=p.order.benarV;p.pilihL=p.order.benarL;assert.equal(K.nilai(p).sempurna,true);K.lanjut(p);
+  p.pilihV=p.order.benarV;p.pilihL=(p.order.benarL+1)%4;const h=K.nilai(p);assert.equal(h.sempurna,false);assert.equal(h.v,true);assert.equal(h.l,false);K.lanjut(p);
+  K.nilai(p,true);assert.deepEqual([p.sempurna,p.okV,p.okL,p.gagal],[1,2,1,1]);
+  const q=K.player(1,'B',1,9,2);assert.equal(K.rank([q,p])[0],p);
+});
