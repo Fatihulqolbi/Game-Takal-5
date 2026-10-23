@@ -102,6 +102,12 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .pbtn:active{box-shadow:inset 0 .15em 0 rgba(30,42,74,.14),0 .08em 0 var(--ink)}
 .pbtn b{flex:none;display:grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--sun);border:.14em solid var(--ink)}
 .pbtn small{display:block;font-family:var(--body);font-size:.72em;font-weight:700;opacity:.75;line-height:1.1}
+/* Daftar isi: satu baris per bab supaya muat banyak bab di satu halaman */
+.note.toc{top:6.7em;justify-content:flex-start;gap:.24em;padding-top:.35em;padding-bottom:.35em}
+.note.toc h2{font-size:1em;margin-bottom:.05em}
+.toc .pbtn{font-size:.56em;padding:.2em .7em;box-shadow:0 .2em 0 var(--ink)}
+.toc .pbtn span{flex:1}
+.toc .pbtn small{display:block;flex:none;font-family:var(--body);font-size:.78em;background:var(--cream);border:.12em solid var(--ink);border-radius:99px;padding:0 .6em;opacity:1}
 .pbtn.play{font-size:1.6em;justify-content:center;background:var(--leaf);padding:.1em 1em;align-self:center}
 .pbtn[disabled]{opacity:.6;cursor:default}
 .center{align-items:center;text-align:center;gap:.55em}
@@ -269,11 +275,11 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
     <!-- LEMBAR 1: daftar isi | Bab 1 kiri -->
     <div class="leaf">
       <div class="face f" data-s="1"><div class="art yard">
-        <div class="note">
+        <div class="note toc">
           <h2>Daftar Isi</h2>
-          <button class="pbtn" data-go="2"><b>1</b><span>Laskar Pecahan<small>Matematika, bab pecahan</small></span></button>
-          <button class="pbtn" data-go="3"><b>2</b><span>Dimensia<small>Matematika, geometri</small></span></button>
-          <button class="pbtn" data-go="4"><b>3</b><span>Pengukuran<small>Matematika, pengukuran</small></span></button>
+          <button class="pbtn" data-go="2"><b>1</b><span>Laskar Pecahan</span><small>Pecahan</small></button>
+          <button class="pbtn" data-go="3"><b>2</b><span>Dimensia</span><small>Geometri</small></button>
+          <button class="pbtn" data-go="4"><b>3</b><span>Pengukuran</span><small>Satuan ukur</small></button>
         </div><span class="no">2</span></div>
         <div class="pc" style="left:1em;bottom:10.4em;width:3.2em;--a:-84deg;--d:.16s"><svg viewBox="0 0 60 160"><use href="#tiang"/></svg></div>
         <div class="pc" style="left:12.6em;bottom:12.8em;width:5.4em;--a:-86deg;--d:.08s"><svg viewBox="0 0 120 60"><use href="#awan"/></svg></div>
