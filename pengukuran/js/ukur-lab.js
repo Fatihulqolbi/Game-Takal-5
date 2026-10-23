@@ -82,13 +82,51 @@ const UkurLab=(()=>{
     else if(a.id==='gelas'){svg=UK.svgGelas(v,1000,100);teks=`Air: <b>${UK.angka(v)} ml</b> = <b>${UK.angka(v/1000)} liter</b>`}
     else if(a.id==='timbangan'){svg=UK.svgTimbangan(v,2000,200,'g');teks=`Berat: <b>${UK.angka(v)} g</b> = <b>${UK.angka(v/1000)} kg</b>`}
     else{const h=Math.floor(v/60)||12,m=v%60;svg=UK.svgJam(h,m);teks=`Pukul <b>${UK.jamTeks(h,m)}</b>, jarum panjang di menit ${m}`}
-    $('alatGambar').innerHTML=svg;$('bacaan').innerHTML=teks}
+    $('alatGambar').innerHTML=svg;$('bacaan').innerHTML=teks;$('jelas').innerHTML=jelaskan(a.id,v).map(x=>`<li>${x}</li>`).join('');
+    if(document.activeElement!==$('manual'))$('manual').value=tulisManual(a.id,v)}
+  /* ---------- ketik manual: angka yang diketik anak, lalu dijelaskan arti tiap bagiannya ---------- */
+  const MANUAL={jam:{label:'Ketik jam',contoh:'12:55',mode:'text'},penggaris:{label:'Ketik panjang (cm)',contoh:'7,4',mode:'decimal'},
+    gelas:{label:'Ketik banyak air (ml)',contoh:'350',mode:'numeric'},timbangan:{label:'Ketik berat (gram)',contoh:'1300',mode:'numeric'}};
+  const tulisManual=(id,v)=>id==='jam'?UK.jamTeks(Math.floor(v/60)||12,v%60).replace('.',':'):id==='penggaris'?UK.angka(v/10):String(v);
+  function bacaManual(id,teks){const t=String(teks).trim();
+    if(id==='jam'){const m=t.match(/^(\d{1,2})\s*[:.\s]\s*(\d{1,2})$/)||t.match(/^(\d{1,2})$/);if(!m)return{salah:'Tulis jam dan menit dipisah titik dua, contoh 12:55.'};
+      const h=+m[1],mn=m[2]===undefined?0:+m[2];if(h>23)return{salah:'Jam paling besar 23. Coba lagi, ya.'};if(mn>59)return{salah:'Menit paling besar 59, karena 60 menit = 1 jam.'};
+      return{v:(h%12)*60+mn,h24:h}}
+    const x=baca(t);if(!(x>=0))return{salah:'Tulis angkanya saja, contoh '+MANUAL[id].contoh+'.'};
+    if(id==='penggaris'){const mm=Math.round(x*10);if(Math.abs(x*10-mm)>1e-9)return{salah:'Penggaris hanya bisa dibaca sampai milimeter, jadi cukup satu angka di belakang koma (contoh 7,4).'};if(mm<10||mm>150)return{salah:'Penggaris ini panjangnya 1 sampai 15 cm.'};return{v:mm}}
+    const maks=id==='gelas'?1000:2000;if(x>maks)return{salah:id==='gelas'?'Gelas ukur ini hanya muat sampai 1.000 ml.':'Timbangan ini hanya sampai 2.000 g.'};
+    if(!Number.isInteger(x))return{salah:'Tulis bilangan bulat, contoh '+MANUAL[id].contoh+'.'};return{v:x}}
+  function jelaskan(id,v,h24){
+    if(id==='jam'){const h=Math.floor(v/60)||12,m=v%60,ang=Math.floor(m/5),sisa=m%5,next=h%12+1;const L=[];
+      if(h24!==undefined&&h24>12)L.push(`Jam ${h24} pada jam dinding dibaca jam ${h24-12} ${h24<15?"siang":h24<19?"sore":"malam"}.`);
+      if(h24===0)L.push('Jam 0 (tengah malam) pada jam dinding dibaca jam 12.');
+      L.push(`<b>${h}</b> adalah <b>jam</b>. Jarum pendek menunjuk angka ${h}${m?`, lalu bergerak pelan menuju angka ${next}`:''}.`);
+      L.push(`<b>${String(m).padStart(2,'0')}</b> adalah <b>menit</b>. ${m===0?'Jarum panjang tepat di angka 12.':sisa===0?`Jarum panjang menunjuk angka ${ang}, karena ${ang} × 5 = ${m}.`:`Jarum panjang ada di garis kecil ke-${sisa} setelah angka ${ang||12}, karena ${ang} × 5 + ${sisa} = ${m}.`}`);
+      L.push(m===0?`Dibaca: pukul ${h} tepat.`:m===30?`Dibaca: pukul ${h} lewat 30 menit, atau setengah ${next}.`:m>30?`Dibaca: pukul ${h} lewat ${m} menit, atau pukul ${next} kurang ${60-m} menit.`:`Dibaca: pukul ${h} lewat ${m} menit.`);return L}
+    if(id==='penggaris'){const cm=Math.floor(v/10),mm=v%10;return[`<b>${cm}</b> adalah <b>cm penuh</b>. Ujung pita melewati angka ${cm} pada penggaris.`,
+      mm?`<b>${mm}</b> adalah <b>mm</b>: ada ${mm} garis kecil setelah angka ${cm}. 1 garis kecil = 1 mm.`:'Ujung pita tepat di garis panjang, jadi tidak ada mm tambahan.',
+      `${cm} cm ${mm?mm+' mm ':''}= <b>${UK.angka(v/10)} cm</b> = <b>${v} mm</b> (1 cm = 10 mm).`]}
+    if(id==='gelas'){const ratus=Math.floor(v/100)*100,sisa=v-ratus;return[`Garis panjang tiap <b>100 ml</b>. Permukaan air ${ratus?`melewati garis ${UK.angka(ratus)}`:'belum sampai garis 100'}.`,
+      sisa===0?'Permukaan air tepat di garis panjang.':sisa===50?'Sisanya <b>50 ml</b>, tepat di garis pendek (tengah-tengah).':`Sisanya <b>${sisa} ml</b>, ${sisa<50?'di bawah':'di atas'} garis pendek 50 ml.`,
+      `${UK.angka(v)} ml = <b>${UK.angka(v/1000)} liter</b> (1 liter = 1.000 ml).`]}
+    const dua=Math.floor(v/200)*200,sisa=v-dua,kg=Math.floor(v/1000),g=v%1000;
+    return[`Angka besar tiap <b>200 g</b>. Jarum ${dua?`melewati angka ${UK.angka(dua)}`:'belum sampai angka 200'}.`,
+      sisa===0?'Jarum tepat di angka besar.':sisa===100?'Sisanya <b>100 g</b>, tepat di garis kecil di tengahnya.':`Sisanya <b>${sisa} g</b>.`,
+      `${UK.angka(v)} g = ${kg?`${kg} kg ${g?g+' g ':''}= `:''}<b>${UK.angka(v/1000)} kg</b> (1 kg = 1.000 g).`]}
+  function pakaiManual(){const a=ALAT[alatSt.i],h=bacaManual(a.id,$('manual').value);
+    if(h.salah){$('jelas').innerHTML=`<li class="salah">${h.salah}</li>`;A.play('bad');ucap(h.salah,'bingung');return}
+    alatSt.v[alatSt.i]=h.v;$('geser').value=h.v;$('geser').disabled=false;alatSt.soal=null;tampilSoal();gambarAlat();A.play('good');
+    if(h.h24!==undefined&&(h.h24>12||h.h24===0))$('bacaan').innerHTML=`Pukul <b>${UK.jamTeks(h.h24,h.v%60)}</b>, di jam dinding terlihat ${UK.jamTeks(Math.floor(h.v/60)||12,h.v%60)}`;
+    if(h.h24!==undefined)$('jelas').innerHTML=jelaskan('jam',h.v,h.h24).map(x=>`<li>${x}</li>`).join('');
+    ucap('Lihat alatnya berubah. Baca penjelasannya, ya!','senang')}
   function panelAlat(){const a=ALAT[alatSt.i];
     $('panel').innerHTML=`
       <section class="lab-kartu"><h2>Pilih alat ukur</h2>
         <div class="chips rapat">${ALAT.map((x,i)=>`<button type="button" class="chip" data-alat="${i}" aria-pressed="${i===alatSt.i}">${x.nama}</button>`).join('')}</div>
         <label class="lbl" for="geser">Geser untuk mengubah</label><input id="geser" type="range" min="${a.min}" max="${a.max}" step="${a.step}" value="${alatSt.v[alatSt.i]}">
-        <p class="bacaan" id="bacaan" role="status"></p><p class="aturan">${TIPS[a.id]}</p></section>
+        <label class="lbl" for="manual">${MANUAL[a.id].label}</label>
+        <div class="ubah-baris"><input id="manual" class="manual" inputmode="${MANUAL[a.id].mode}" autocomplete="off" placeholder="${MANUAL[a.id].contoh}" aria-describedby="jelas"><button type="button" class="chunky go" id="pakai">Tampilkan</button></div>
+        <p class="bacaan" id="bacaan" role="status"></p><ul class="jelas" id="jelas"></ul><p class="aturan">${TIPS[a.id]}</p></section>
       <section class="lab-kartu"><h2>Tantangan membaca <small>benar <b>${alatSt.benar}</b> dari <b>${alatSt.n}</b></small></h2>
         <div class="chips rapat">${LEVEL.map((l,i)=>`<button type="button" class="chip" data-lv="${i+1}" aria-pressed="${alatSt.lv===i+1}">${l}</button>`).join('')}</div>
         <div id="soalBox" class="soal-box"></div></section>`;
@@ -108,12 +146,13 @@ const UkurLab=(()=>{
     else if(b.dataset.dari){s.dari=b.dataset.dari;b.parentElement.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b));if(!sibuk)S3.taruh(views[tab],UK.TANGGA[tab].satuan.indexOf(s.dari))}
     else if(b.dataset.ke){s.ke=b.dataset.ke;b.parentElement.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b))}
     else if(b.id==='lompatBtn')lompatUbah();
+    else if(b.id==='pakai')pakaiManual();
     else if(b.dataset.lv){const t=tab==='alat'?alatSt:s;t.lv=+b.dataset.lv;b.parentElement.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c===b))}
     else if(b.dataset.soal!==undefined)soalBaru();
     else if(b.dataset.jawab!==undefined)jawab(+b.dataset.jawab);
     else if(b.dataset.alat!==undefined){alatSt.i=+b.dataset.alat;panelAlat();A.play('tap')}});
   $('panel').addEventListener('input',e=>{if(e.target.id==='geser'){alatSt.v[alatSt.i]=+e.target.value;gambarAlat()}});
-  $('panel').addEventListener('keydown',e=>{if(e.target.id==='nilai'&&e.key==='Enter')lompatUbah()});
+  $('panel').addEventListener('keydown',e=>{if(e.target.id==='nilai'&&e.key==='Enter')lompatUbah();if(e.target.id==='manual'&&e.key==='Enter')pakaiManual()});
   document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{A.start();A.play('tap');buka(b.dataset.tab)}));
   $('suara').addEventListener('click',()=>{muted=!muted;suara();A.start()});
   $('fsBtn').addEventListener('click',()=>{const d=document;if(d.fullscreenElement)d.exitFullscreen();else d.documentElement.requestFullscreen?.().catch(()=>{})});

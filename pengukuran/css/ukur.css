@@ -89,3 +89,11 @@
 .hub-singkat b{font-family:var(--display);font-weight:800;font-size:clamp(15px,1.4vw,21px);color:#c2185b}
 @media (max-width:760px){.hub-menu{grid-template-columns:minmax(0,1fr)}}
 .ukur .kode-ingat{white-space:nowrap}
+/* ketik manual di Lab Alat Ukur */
+.lab .manual{width:7ch;font-family:var(--display);font-weight:800;font-size:clamp(22px,2vw,32px);text-align:center;color:var(--ink);border:3px solid var(--ink);border-radius:12px;padding:.05em .3em;background:var(--cream);user-select:text;-webkit-user-select:text}
+.lab #pakai{font-size:clamp(17px,1.6vw,24px);padding:.15em 1em}
+.jelas{margin:.4em 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:clamp(14px,1.3vw,19px);line-height:1.35}
+.jelas li{background:#eef8ff;border:3px solid var(--ink);border-radius:12px;padding:.3em .6em}
+.jelas li:last-child{background:#e7f8df}
+.jelas li.salah{background:#ffe1e3}
+.jelas b{color:#c2185b}
