@@ -43,3 +43,4 @@
 @keyframes clue-in{from{transform:scale(.85);opacity:0}}
 .kado .mode-4 .clue-btn{font-size:clamp(11px,2.4cqw,15px)}
 .kado .mode-4 .clue-pop{max-width:80%}
+.review-body .ok{color:#1f9d55}.review-body .no{color:#c62828}.review-body>h2{font-family:var(--display);font-weight:800;font-size:1.5em;margin:.6em 0 .1em}.review-body .ringkas{opacity:.8}.review-body .explanation ol{margin:0;padding-left:1.3em}

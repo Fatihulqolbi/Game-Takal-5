@@ -117,6 +117,7 @@
     <div class="row">
       <button id="playAgain" class="chunky btn green">Main lagi</button>
       <button id="changeSettings" class="chunky btn">Pengaturan</button>
+      <button id="showReview" class="chunky btn" style="background:var(--sun)">Soal &amp; Pembahasan</button>
       <a class="chunky btn" href="tangga.html">Lab Tangga Satuan</a>
       <a class="chunky btn" href="index.html">Menu Pengukuran</a>
       <a class="chunky btn" href="../index.html#4" data-book-return>Kembali ke buku</a>
@@ -136,6 +137,19 @@
       <button id="endGame" class="chunky btn">Selesai &amp; lihat juara</button>
     </div>
     <div class="row"><a class="small-btn" href="index.html">Menu Pengukuran</a><a class="small-btn" href="../index.html#4" data-book-return>Kembali ke buku</a></div>
+  </div>
+</div>
+
+<div id="review" class="overlay" hidden>
+  <div class="box review-box">
+    <div class="review-head">
+      <h2>Soal &amp; Pembahasan</h2>
+      <div class="row" style="justify-content:flex-end">
+        <button id="downloadReview" class="chunky btn green" style="font-size:clamp(15px,1.5vw,22px)">Unduh pembahasan</button>
+        <button id="closeReview" class="small-btn">Tutup</button>
+      </div>
+    </div>
+    <div class="review-body" id="reviewContent"></div>
   </div>
 </div>
 

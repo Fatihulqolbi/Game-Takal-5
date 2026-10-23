@@ -110,6 +110,15 @@ const LombaGame=(()=>{
     $('podium').setAttribute('aria-label','Panggung juara: '+ranking.map((p,i)=>'juara '+(i+1)+' '+p.name).join(', '));
     $('resultTable').innerHTML=ranking.map((p,i)=>`<div class="result-row"><b>${i+1}</b><b>${escape(p.name)}</b><span><b>${p.benar}</b><small>Benar</small></span><span><b>${p.terbaik}</b><small>Beruntun terbaik</small></span><span><b>${p.salah+p.habis}</b><small>Salah / habis waktu</small></span></div>`).join('')}
 
+  /* ---------- soal & pembahasan (dilihat di layar atau diunduh) ---------- */
+  function reviewMarkup(){return session.players.map(p=>`<h2>${escape(p.name)}</h2><p class="ringkas">${p.benar} benar dari ${p.riwayat.length} soal, beruntun terbaik ${p.terbaik}.</p>${p.riwayat.length?p.riwayat.map((h,i)=>{const q=h.q;
+    return`<article class="review-item"><small>Soal ${i+1}: ${UK.TANGGA[q.besaran].nama}, ${JUDUL[q.jenis]||'soal'}. <span class="${h.ok?'ok':'no'}">${h.ok?'Benar':h.habis?'Waktu habis':'Belum tepat'}</span></small>
+      <h3>${q.teks}</h3>${q.gambar||''}<p>Pilihan: ${q.opsi.map((o,j)=>'ABCD'[j]+'. '+o).join(', ')}</p>
+      <p>Jawabanmu: <b class="${h.ok?'ok':'no'}">${h.pilih===null?'belum dijawab':q.opsi[h.pilih]}</b>. Kunci: <b>${q.opsi[q.benar]}</b></p>
+      <div class="explanation"><ol>${q.kunci.map(k=>'<li>'+k+'</li>').join('')}</ol>Ingat: ${(q.jenis==='tahun'?UK.SINGKAT.tahun:q.ingat).kalimat}</div></article>`}).join(''):'<p>Belum ada soal yang dijawab.</p>'}`).join('')}
+  function download(){const html=`<!doctype html><html lang="id"><meta charset="utf-8"><title>Pembahasan Lompat Tangga</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800&display=swap"><style>body{font:16px/1.55 Nunito,system-ui,sans-serif;max-width:860px;margin:32px auto;padding:0 20px;color:#1e2a4a}h1,h2{font-family:'Baloo 2',sans-serif;line-height:1.1}h1{font-size:30px;margin:0}h2{font-size:24px;margin:28px 0 6px;border-bottom:3px solid #1e2a4a;padding-bottom:4px}.sub{color:#5b6b85;margin:4px 0 0}.ringkas{color:#5b6b85}.review-item{border:2px solid #d5deea;border-radius:14px;padding:12px 16px;margin:12px 0;break-inside:avoid}.review-item h3{font-size:17px;margin:4px 0}.review-item small{color:#5b6b85;font-weight:800}.review-item svg{display:block;max-width:320px;max-height:220px;margin:6px 0}.explanation{background:#edf7e7;border-radius:10px;padding:8px 12px;margin-top:6px}.explanation ol{margin:0;padding-left:20px}.ok{color:#1f9d55}.no{color:#c62828}@media print{body{margin:0}}</style><h1>Soal dan Pembahasan: Lompat Tangga</h1><p class="sub">Pengukuran, satuan panjang, volume, berat, dan waktu. ${new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}, ${settings.minutes} menit.</p>${reviewMarkup()}</html>`;
+    const url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='Lompat-Tangga-Soal-dan-Pembahasan.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+
   function loop(now){const elapsed=Math.max(0,(now-last)/1000),dt=Math.min(elapsed,.06);last=now;
     if(session?.status!=='paused')sim+=dt;V.frame();
     if(screen==='home'&&V.ready){if(!homeView)homeView=S3.home($('homeStage'));S3.updateHome(homeView,sim,settings.motion);V.render(homeView)}
@@ -138,7 +147,8 @@ const LombaGame=(()=>{
   $('volume').addEventListener('input',()=>{settings.volume=+$('volume').value;$('volumeValue').textContent=settings.volume+'%';configureAudio();A.start();save()});
   for(const id of['soundHome','gameSound'])$(id).addEventListener('click',()=>{muted=!muted;configureAudio();A.start()});
   $('pauseGame').addEventListener('click',pause);$('resumeGame').addEventListener('click',resume);$('endGame').addEventListener('click',finish);
-  $('playAgain').addEventListener('click',start);$('changeSettings').addEventListener('click',()=>setup(settings.players));
+  $('showReview').addEventListener('click',()=>{$('reviewContent').innerHTML=reviewMarkup();$('review').hidden=false});$('closeReview').addEventListener('click',()=>{$('review').hidden=true});$('downloadReview').addEventListener('click',download);
+  $('playAgain').addEventListener('click',()=>{$('review').hidden=true;start()});$('changeSettings').addEventListener('click',()=>setup(settings.players));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});addEventListener('bookreturn',()=>{pause();A.stop()});
   /* papan ketik: tiap pemain punya 4 tombol (1234, 7890, qwer, uiop); Esc = jeda */
   addEventListener('keydown',e=>{if(e.key==='Escape'&&screen==='game'){session.status==='paused'?resume():pause();return}if(e.repeat||/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)||session?.status!=='play')return;
