@@ -32,7 +32,8 @@ const KadoGame=(()=>{
 
   /* ---------- arena ---------- */
   function buildPlayer(i,seed){
-    const p=C.player(i,settings.names[i],settings.characters[i],seed,settings.level,settings.bangun);p.sisa=p.order.sabar;p.jeda=0;p.sibuk=false;p.tick=-1;
+    /* tiap pemain mendapat pesanan berbeda (benih sendiri + daftar pesanan bersama), supaya tidak bisa saling contek */
+    const p=C.player(i,settings.names[i],settings.characters[i],seed+i*7717,settings.level,settings.bangun,session.dilihat||(session.dilihat=new Set()));p.sisa=p.order.sabar;p.jeda=0;p.sibuk=false;p.tick=-1;
     const el=document.createElement('article');p.el=el;el.className='arena';el.style.setProperty('--player',colors[i]);el.setAttribute('aria-label','Arena '+p.name);
     el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama}, penjaga toko</small></span></div><div class="tower-score"><b>0</b><small>kado sempurna</small></div></header>
       <div class="arena-body"><div class="tower-view scene-slot"><div class="pesanan-tag"></div><div class="clue-pop" hidden></div><div class="robot-bubble"></div></div><section class="question-card kado-card" aria-label="Langkah pesanan pemain ${i+1}"></section></div>

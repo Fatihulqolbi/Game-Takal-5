@@ -58,7 +58,7 @@ const DSoal=(()=>{
   const RUANG=['volume-kubus','volume-balok','tinggi-balok','volume-gabungan','kubus-satuan','tampak-bangun','kolom-kubus','sifat-kubus'];
   const dimensi=id=>RUANG.includes(id)?'3d':'2d';
   const pilihan=jenis=>templates.map(t=>t[0]).filter(id=>jenis==='2d'||jenis==='3d'?dimensi(id)===jenis:true);
-  function deck(seed,level,jenis='campur'){const daftar=pilihan(jenis);let bag=[],serial=0;const recent=new Set();return{next(){if(!bag.length)bag=shuffle(K.rng(seed+serial),daftar);const type=bag.pop();let q;let t=type;for(let tries=0;tries<240;tries++){if(tries&&tries%40===0)t=daftar[(daftar.indexOf(t)+1)%daftar.length];q=make(t,(seed+(++serial)*104729)>>>0,level);if(!recent.has(q.text+q.diagram))break}recent.add(q.text+q.diagram);return q}}}
+  function deck(seed,level,jenis='campur',recent=new Set()){const daftar=pilihan(jenis);let bag=[],serial=0;return{next(){if(!bag.length)bag=shuffle(K.rng(seed+serial),daftar);const type=bag.pop();let q;let t=type;for(let tries=0;tries<240;tries++){if(tries&&tries%40===0)t=daftar[(daftar.indexOf(t)+1)%daftar.length];q=make(t,(seed+(++serial)*104729)>>>0,level);if(!recent.has(q.text+q.diagram))break}recent.add(q.text+q.diagram);return q}}}
   return{templates:templates.map(t=>t[0]),dimensi,pilihan,make,deck,correct,validate,svg,grid};
 })();
 if(typeof module!=='undefined')module.exports=DSoal;

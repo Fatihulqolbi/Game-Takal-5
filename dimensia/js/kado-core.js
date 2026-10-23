@@ -83,7 +83,8 @@ const KadoCore=(()=>{
       rumusV:h.rumusV,rumusL:h.rumusL,nama:h.nama,teks:h.teks,lebar:h.lebar,tinggi:h.tinggi,kotak,satuanIsi:kotak?'permen':'cm³',bulat:['tabung','kerucut','bola'].includes(kind),petunjuk:PETUNJUK[kind],namaBangun:NAMA[kind]}}
   /* pesanan ke-i yang belum pernah keluar (urutannya sama untuk semua pemain karena memakai benih yang sama) */
   function pesananUnik(p,i){let o;for(let c=0;c<48;c++){o=pesanan(p.seed,i,p.level,p.bangun,c);if(!p.dilihat.has(o.nama))break}p.dilihat.add(o.nama);return o}
-  function player(i,name,character,seed,level,bangun='kotak'){const p={i,name,character,seed,level,bangun,urut:0,sempurna:0,okV:0,okL:0,gagal:0,petunjuk:0,riwayat:[],dilihat:new Set(),phase:'isi',pilihV:null,pilihL:null};p.order=pesananUnik(p,0);return p}
+  /* dilihat boleh dibagi antarpemain supaya pesanan di layar tidak ada yang kembar */
+  function player(i,name,character,seed,level,bangun='kotak',dilihat=new Set()){const p={i,name,character,seed,level,bangun,urut:0,sempurna:0,okV:0,okL:0,gagal:0,petunjuk:0,riwayat:[],dilihat,phase:'isi',pilihV:null,pilihL:null};p.order=pesananUnik(p,0);return p}
   /* nilai satu pesanan setelah selesai (atau habis waktu) */
   function nilai(p,habis=false){const o=p.order,v=p.pilihV!==null&&o.opsiV[p.pilihV]===o.V,l=p.pilihL!==null&&o.opsiL[p.pilihL]===o.L,sempurna=v&&l&&!habis;
     if(v)p.okV++;if(l)p.okL++;if(sempurna)p.sempurna++;if(habis)p.gagal++;

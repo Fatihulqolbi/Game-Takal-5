@@ -15,7 +15,7 @@ const LombaGame=(()=>{
   let settings=bersih(raw),screen='home',session=null,homeView=null,pickView=null,pick={i:0,sel:0},podiumViews=[],sim=0,last=performance.now(),muted=false;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)settings.motion=false;
   const save=()=>{try{localStorage.setItem(STORE,JSON.stringify(settings))}catch(_){}};
-  const configureAudio=()=>{A.configure({...settings,volume:muted?0:settings.volume});$('soundHome').textContent=muted?'Suara mati':A.running?'Suara nyala':'Ketuk layar untuk musik';$('soundHome').classList.toggle('minta',!muted&&!A.running);for(const id of['soundHome','gameSound'])$(id).setAttribute('aria-pressed',!muted);$('gameSound').setAttribute('aria-label',muted?'Nyalakan suara':'Matikan suara')};
+  const configureAudio=()=>{A.configure({...settings,lagu:'ukur',volume:muted?0:settings.volume});$('soundHome').textContent=muted?'Suara mati':A.running?'Suara nyala':'Ketuk layar untuk musik';$('soundHome').classList.toggle('minta',!muted&&!A.running);for(const id of['soundHome','gameSound'])$(id).setAttribute('aria-pressed',!muted);$('gameSound').setAttribute('aria-label',muted?'Nyalakan suara':'Matikan suara')};
   configureAudio();addEventListener('audiostate',configureAudio);
   function show(id){screen=id;for(const n of['home','pick','setup','game','results'])$(n).hidden=n!==id;scrollTo(0,0)}
   function talk(p,teks,mood){p.el.querySelector('.robot-bubble').textContent=ROBOT[p.character].nama+': '+teks;if(mood)p.view.bot.aksi(mood)}
@@ -39,7 +39,9 @@ const LombaGame=(()=>{
 
   /* ---------- arena ---------- */
   function buildPlayer(i,seed){
-    const p={i,name:settings.names[i],character:settings.characters[i],seed,urut:0,benar:0,salah:0,habis:0,beruntun:0,terbaik:0,phase:'tanya',pilih:null,sisa:0,jeda:0,tick:-1,riwayat:[]};
+    /* tiap pemain punya deretan soal sendiri (benih berbeda), dan daftar soal terpakai dibagi bersama: tidak ada soal kembar di layar */
+    const benih=seed+i*7717,dek=UK.dek((n,c)=>UK.soal(benih,n,settings.level,settings.jenis,c),session.dipakai);
+    const p={i,name:settings.names[i],character:settings.characters[i],seed:benih,dek,urut:0,benar:0,salah:0,habis:0,beruntun:0,terbaik:0,phase:'tanya',pilih:null,sisa:0,jeda:0,tick:-1,riwayat:[]};
     const el=document.createElement('article');p.el=el;el.className='arena';el.style.setProperty('--player',colors[i]);el.setAttribute('aria-label','Arena '+p.name);
     el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama}, ${ROBOT[p.character].julukan.toLowerCase()}</small></span></div><div class="tower-score"><b>0</b><small>soal benar</small></div></header>
       <div class="arena-body"><div class="tower-view scene-slot"><div class="pesanan-tag papan-nilai"></div><div class="ukur-gambar" hidden></div><div class="clue-pop" hidden></div><div class="robot-bubble"></div></div><section class="question-card kado-card" aria-label="Soal pemain ${i+1}"></section></div>
@@ -64,7 +66,7 @@ const LombaGame=(()=>{
     pop.innerHTML=`<b>Petunjuk ${UK.TANGGA[q.besaran].nama.toLowerCase()}</b>${isi}${alat}`;pop.hidden=false;p.el.querySelector('[data-clue]')?.setAttribute('aria-expanded','true')}
   function tutupPetunjuk(p){p.el.querySelector('.clue-pop').hidden=true;p.el.querySelector('[data-clue]')?.setAttribute('aria-expanded','false')}
   function mulaiSoal(p,awal=false){
-    const q=session.dek.ambil(p.urut);p.q=q;p.phase='tanya';p.pilih=null;p.sisa=sabar(settings.level,p.urut,q);p.total=p.sisa;p.tick=-1;
+    const q=p.dek.ambil(p.urut);p.q=q;p.phase='tanya';p.pilih=null;p.sisa=sabar(settings.level,p.urut,q);p.total=p.sisa;p.tick=-1;
     S3.bangun(p.view,q.lompat?.besaran||q.besaran);const T=UK.TANGGA[p.view.besaran];
     S3.taruh(p.view,q.lompat?T.satuan.indexOf(q.lompat.dari):T.satuan.indexOf(T.pokok));
     papanNilai(p,q.lompat?`${UK.angka(q.lompat.nilai)} ${q.lompat.dari}`:UK.TANGGA[q.besaran].nama,q.lompat?`Mulai dari anak tangga ${q.lompat.dari}`:`Soal ${p.urut+1}`);
@@ -94,7 +96,7 @@ const LombaGame=(()=>{
   /* ---------- sesi ---------- */
   function clearViews(){podiumViews.forEach(V.dispose);podiumViews=[]}
   function start(){if(!V.ready)return;clearViews();$('pause').hidden=true;show('game');$('arenas').innerHTML='';$('arenas').className='arenas mode-'+settings.players;
-    const seed=Math.floor(Math.random()*0x7fffffff);session={status:'countdown',beforePause:'play',remaining:settings.minutes*60,total:settings.minutes*60,countdown:3.2,lastCount:-1,players:[],seed,dek:UK.dek((n,c)=>UK.soal(seed,n,settings.level,settings.jenis,c))};
+    const seed=Math.floor(Math.random()*0x7fffffff);session={status:'countdown',beforePause:'play',remaining:settings.minutes*60,total:settings.minutes*60,countdown:3.2,lastCount:-1,players:[],seed,dipakai:new Set()};
     for(let i=0;i<settings.players;i++)session.players.push(buildPlayer(i,seed));
     $('countdown').hidden=false;$('countdownNumber').textContent='3';A.pause(false);A.urgent(false);A.start();updateTime()}
   function updateTime(){$('sessionClock').textContent=time(Math.ceil(session.remaining));$('sessionProgress').style.width=100*session.remaining/session.total+'%';$('sessionClock').parentElement.classList.toggle('urgent',session.remaining<=30)}

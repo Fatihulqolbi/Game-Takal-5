@@ -14,7 +14,7 @@ const UkurLab=(()=>{
   const motion=!matchMedia('(prefers-reduced-motion: reduce)').matches;
   const st={};for(const b of UK.BESARAN){const S=UK.TANGGA[b].satuan;st[b]={dari:b==='waktu'?'jam':S[0],ke:b==='waktu'?'menit':S[3],nilai:b==='waktu'?'2':'2,5',lv:1,n:0,benar:0,soal:null,seed:Math.floor(Math.random()*1e9)}}
   const alatSt={i:0,v:ALAT.map(a=>a.awal),lv:1,n:0,benar:0,soal:null,seed:Math.floor(Math.random()*1e9)};
-  A.configure({music:false,fx:true,volume:80,motion});
+  A.configure({music:false,fx:true,volume:80,motion,lagu:'ukur'});
   const suara=()=>{A.configure({fx:!muted,music:false});$('suara').textContent=muted?'Suara mati':'Suara nyala';$('suara').setAttribute('aria-pressed',!muted)};
 
   function ucap(teks,mood){const r=ROBOT[TOKOH[tab==='alat'?ALAT[alatSt.i].besaran:tab]];$('ucap').textContent=r.nama+': '+teks;const v=views[tab==='alat'?null:tab];if(mood&&v)v.bot.aksi(mood)}

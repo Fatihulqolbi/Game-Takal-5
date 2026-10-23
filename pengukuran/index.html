@@ -36,12 +36,6 @@
       <a class="chunky hub-kartu" href="tangga.html#alat"><i class="tahap">2</i><b>Lab Alat Ukur</b><small>Baca penggaris, gelas ukur, timbangan, dan jam</small></a>
       <a class="chunky hub-kartu main" href="lomba.html"><i class="tahap">3</i><b>Game Lompat Tangga</b><small>Lomba 1, 2, atau 4 pemain dengan layar terbagi</small></a>
     </div>
-    <div class="hub-singkat" aria-label="Singkatan tangga satuan">
-      <span><b>Ka-He-Da-M-De-Ce-Me</b>satuan panjang</span>
-      <span><b>Ka-He-Da-L-De-Ce-Me</b>satuan volume</span>
-      <span><b>Ka-He-Da-G-De-Ce-Me</b>satuan berat</span>
-      <span><b>TuKa NaBa</b>turun dikali, naik dibagi</span>
-    </div>
     <div class="row">
       <button class="small-btn" id="soundHome" aria-pressed="true">Suara nyala</button>
       <button class="small-btn" id="fsBtn">Layar penuh</button>
@@ -59,7 +53,7 @@
 (()=>{
   const $=id=>document.getElementById(id),A=MenaraAudio,V=MenaraScene,motion=!matchMedia('(prefers-reduced-motion: reduce)').matches;
   let muted=false,view=null,sim=0,last=performance.now();
-  const atur=()=>{A.configure({music:true,fx:true,motion,volume:muted?0:80});$('soundHome').textContent=muted?'Suara mati':A.running?'Suara nyala':'Ketuk layar untuk musik';$('soundHome').classList.toggle('minta',!muted&&!A.running);$('soundHome').setAttribute('aria-pressed',!muted)};
+  const atur=()=>{A.configure({music:true,fx:true,motion,lagu:'ukur',volume:muted?0:80});$('soundHome').textContent=muted?'Suara mati':A.running?'Suara nyala':'Ketuk layar untuk musik';$('soundHome').classList.toggle('minta',!muted&&!A.running);$('soundHome').setAttribute('aria-pressed',!muted)};
   atur();addEventListener('audiostate',atur);
   $('soundHome').addEventListener('click',()=>{muted=!muted;atur();A.start()});
   $('fsBtn').addEventListener('click',()=>{const d=document;if(d.fullscreenElement)d.exitFullscreen();else d.documentElement.requestFullscreen?.().catch(()=>{})});

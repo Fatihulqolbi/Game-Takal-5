@@ -189,9 +189,9 @@ function soal(seed,i,level=2,jenis='campur',coba=0){
   else{const tipe=lv===1?pilih(r,['ubah','ubah','ubah','alat']):lv===2?pilih(r,['ubah','ubah','jumlah','alat','cerita']):pilih(r,['ubah','jumlah','banding','cerita','alat']);
     s=tipe==='ubah'?soalUbah(r,lv,besaran):tipe==='jumlah'?soalJumlah(r,lv,besaran):tipe==='banding'?soalBanding(r,lv,besaran):tipe==='cerita'?soalCerita(r,lv,besaran):soalAlat(r,lv,besaran)}
   return{i,gambar:null,...s,ingat:SINGKAT[s.besaran]}}
-/* deretan soal tanpa pengulangan: buat(n, coba) membuat soal ke-n; kalau sama dengan soal sebelumnya, coba lagi dengan angka lain */
+/* deretan soal tanpa pengulangan (dipakai boleh dibagi antarpemain supaya soal tiap pemain juga tidak sama): buat(n, coba) membuat soal ke-n; kalau sama dengan soal sebelumnya, coba lagi dengan angka lain */
 const kunciSoal=q=>q.teks+'|'+q.opsi[q.benar];
-function dek(buat){const daftar=[],dipakai=new Set();
+function dek(buat,dipakai=new Set()){const daftar=[];
   return{ambil(i){while(daftar.length<=i){const n=daftar.length;let q;for(let c=0;c<80;c++){q=buat(n,c);if(!dipakai.has(kunciSoal(q)))break}dipakai.add(kunciSoal(q));daftar.push(q)}return daftar[i]},dipakai}}
 /* soal membaca alat ukur saja (dipakai Lab Alat Ukur) */
 function alat(seed,level,besaran){return{gambar:null,...soalAlat(random(seed),Math.max(1,Math.min(3,level)),besaran)}}
