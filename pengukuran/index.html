@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Pengukuran: belajar panjang, volume, berat, dan waktu dengan tangga satuan 3D bersama Meto, Lita, Grama, dan Tiko.">
+<meta name="theme-color" content="#9fdcff">
+<title>Pengukuran · Tangga Satuan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../dimensia/css/menara.css">
+<link rel="stylesheet" href="css/ukur.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="kota ukur hub">
+<canvas id="cityCanvas" aria-hidden="true"></canvas>
+<section id="home" class="screen">
+  <div class="logo">
+    <h1>Peng<span>ukuran</span></h1>
+    <p>Panjang · Volume · Berat · Waktu</p>
+  </div>
+  <div class="hero-world">
+    <div id="homeStage" class="scene-slot"></div>
+    <div id="robotTalk" class="robot-talk" role="status">Meto: “Ketuk nama kami untuk berkenalan!”</div>
+  </div>
+  <div class="menu-bottom">
+    <div class="chips robot-picks" aria-label="Kenalan dengan tokoh">
+      <button class="chip" data-hello="0"><i class="meto-dot"></i>Meto · panjang</button>
+      <button class="chip" data-hello="1"><i class="lita-dot"></i>Lita · volume</button>
+      <button class="chip" data-hello="2"><i class="grama-dot"></i>Grama · berat</button>
+      <button class="chip" data-hello="3"><i class="tiko-dot"></i>Tiko · waktu</button>
+    </div>
+    <div class="hub-menu">
+      <a class="chunky hub-kartu" href="tangga.html"><i class="tahap">1</i><b>Lab Tangga Satuan</b><small>Singkatan, ubah satuan sendiri, dan tantangan tanpa nilai</small></a>
+      <a class="chunky hub-kartu" href="tangga.html#alat"><i class="tahap">2</i><b>Lab Alat Ukur</b><small>Baca penggaris, gelas ukur, timbangan, dan jam</small></a>
+      <a class="chunky hub-kartu main" href="lomba.html"><i class="tahap">3</i><b>Game Lompat Tangga</b><small>Lomba 1, 2, atau 4 pemain dengan layar terbagi</small></a>
+    </div>
+    <div class="hub-singkat" aria-label="Singkatan tangga satuan">
+      <span><b>Ka-He-Da-M-De-Ce-Me</b>km → mm</span>
+      <span><b>Ka-He-Da-L-De-Ce-Me</b>kl → ml</span>
+      <span><b>Ka-He-Da-G-De-Ce-Me</b>kg → mg</span>
+      <span><b>TuKa NaBa</b>Turun kali 10, naik bagi 10</span>
+    </div>
+    <div class="row">
+      <button class="small-btn" id="soundHome" aria-pressed="true">Suara nyala</button>
+      <button class="small-btn" id="fsBtn">Layar penuh</button>
+      <a class="small-btn" href="../index.html#4" data-book-return>Kembali ke buku</a>
+    </div>
+  </div>
+</section>
+<div id="webglError" class="overlay" hidden><div class="box"><h2>Grafis 3D belum tersedia</h2><p style="margin:0">Menu tetap bisa dipakai. Untuk tangga 3D, gunakan Chrome atau Edge dengan akselerasi grafis aktif.</p></div></div>
+
+<script src="../vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script src="../dimensia/js/menara-core.js"></script><script src="js/tokoh.js"></script><script src="../dimensia/js/menara-audio.js"></script><script src="../dimensia/js/menara-scene.js"></script><script src="js/ukur-data.js"></script><script src="js/tangga-scene.js"></script>
+<script>
+/* Menu Pengukuran: tangga 3D dengan empat tokoh, musik menyala pada sentuhan pertama */
+(()=>{
+  const $=id=>document.getElementById(id),A=MenaraAudio,V=MenaraScene,motion=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let muted=false,view=null,sim=0,last=performance.now();
+  const atur=()=>{A.configure({music:true,fx:true,motion,volume:muted?0:80});$('soundHome').textContent=muted?'Suara mati':A.running?'Suara nyala':'Ketuk layar untuk musik';$('soundHome').classList.toggle('minta',!muted&&!A.running);$('soundHome').setAttribute('aria-pressed',!muted)};
+  atur();addEventListener('audiostate',atur);
+  $('soundHome').addEventListener('click',()=>{muted=!muted;atur();A.start()});
+  $('fsBtn').addEventListener('click',()=>{const d=document;if(d.fullscreenElement)d.exitFullscreen();else d.documentElement.requestFullscreen?.().catch(()=>{})});
+  document.querySelectorAll('[data-hello]').forEach(b=>b.addEventListener('click',()=>{const i=+b.dataset.hello;view?.bots[i].aksi('sapa');$('robotTalk').textContent=ROBOT[i].nama+' ('+ROBOT[i].julukan+'): “'+ROBOT[i].kata+'”';A.start();A.voice(i)}));
+  addEventListener('bookreturn',()=>A.stop());
+  function loop(now){const dt=Math.min(.06,Math.max(0,(now-last)/1000));last=now;sim+=dt;V.frame();
+    if(V.ready){if(!view)view=TanggaScene.home($('homeStage'));TanggaScene.updateHome(view,sim,motion);V.render(view)}requestAnimationFrame(loop)}
+  requestAnimationFrame(loop);
+})();
+</script>
+<script src="../js/transisi-buku.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Pengukuran · Lab Tangga Satuan: belajar sendiri satuan panjang, volume, berat, dan waktu dengan tangga satuan 3D, singkatan, dan alat ukur.">
+<meta name="theme-color" content="#9fdcff">
+<title>Pengukuran · Lab Tangga Satuan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../dimensia/css/menara.css">
+<link rel="stylesheet" href="../dimensia/css/kado.css">
+<link rel="stylesheet" href="css/ukur.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="kota kado ukur lab">
+<canvas id="cityCanvas" aria-hidden="true"></canvas>
+<section class="lab-layar">
+  <header class="lab-atas">
+    <a class="small-btn" href="index.html">‹ Menu</a>
+    <h1>Lab <span>Tangga Satuan</span></h1>
+    <div class="row"><button class="small-btn" id="suara" aria-pressed="true">Suara nyala</button><button class="small-btn" id="fsBtn">Layar penuh</button></div>
+  </header>
+  <nav class="chips lab-tab" role="tablist" aria-label="Pilih materi">
+    <button class="chip" role="tab" data-tab="panjang"><i class="meto-dot"></i>Panjang</button>
+    <button class="chip" role="tab" data-tab="volume"><i class="lita-dot"></i>Volume</button>
+    <button class="chip" role="tab" data-tab="berat"><i class="grama-dot"></i>Berat</button>
+    <button class="chip" role="tab" data-tab="waktu"><i class="tiko-dot"></i>Waktu</button>
+    <button class="chip" role="tab" data-tab="alat"><i class="alat-dot"></i>Alat ukur</button>
+  </nav>
+  <div class="lab-isi">
+    <div class="lab-panggung">
+      <div id="panggung" class="scene-slot"></div>
+      <div id="papan" class="pesanan-tag papan-nilai"></div>
+      <div id="alatGambar" class="lab-alat" hidden></div>
+      <div id="ucap" class="robot-bubble" role="status"></div>
+    </div>
+    <aside class="lab-panel" id="panel"></aside>
+  </div>
+</section>
+<div id="webglError" class="overlay" hidden><div class="box"><h2>Grafis 3D belum tersedia</h2><p style="margin:0">Gunakan Chrome atau Edge dengan akselerasi grafis aktif, lalu muat ulang halaman.</p><div class="row"><a class="small-btn" href="index.html">Menu Pengukuran</a></div></div></div>
+
+<script src="../vendor/three.min.js"></script>
+<script>window.THREE||document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')</script>
+<script src="../dimensia/js/menara-core.js"></script><script src="js/tokoh.js"></script><script src="../dimensia/js/menara-audio.js"></script><script src="../dimensia/js/menara-scene.js"></script><script src="js/ukur-data.js"></script><script src="js/tangga-scene.js"></script><script src="js/ukur-lab.js"></script><script src="../js/transisi-buku.js"></script>
+</body>
+</html>

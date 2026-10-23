@@ -36,7 +36,7 @@ Game ini hanya berupa file HTML, CSS, dan JavaScript biasa. Tidak perlu `npm ins
 
 1. Ekstrak file zip.
 2. Klik dua kali `index.html`. Buku **Jejak Mengajar** terbuka sebagai menu utama di browser (disarankan Chrome atau Edge).
-3. Buka Bab 1 untuk **Laskar Pecahan** atau Bab 2 untuk **DIMENSIA**, lalu tekan **Main**.
+3. Buka Bab 1 untuk **Laskar Pecahan**, Bab 2 untuk **DIMENSIA**, atau Bab 3 untuk **Pengukuran**, lalu tekan **Main**.
 
 Saat pertama dibuka, komputer perlu internet untuk mengambil library 3D (three.js) dan font. Kalau ingin bisa main tanpa internet, lihat bagian **Mode offline** di bawah.
 
@@ -55,6 +55,7 @@ Lalu buka `http://localhost:8000` di browser. Halaman awal langsung menampilkan 
 
 - **Bab 1 → Main:** Laskar Pecahan (`pecahan.html`).
 - **Bab 2 → Main:** DIMENSIA (`dimensia/index.html`).
+- **Bab 3 → Main:** Pengukuran (`pengukuran/index.html`).
 
 Di menu masing-masing game, gunakan **Kembali ke buku** untuk kembali ke babnya.
 
@@ -188,11 +189,56 @@ Pemeriksaan pengembang (tanpa `npm install`):
 
 ```bash
 node --test tests/dimensia.test.cjs
+node --test tests/pengukuran.test.cjs
 node tests/browser-game.cjs
 node tests/browser-game.cjs --extra
 ```
 
 Tes browser menggunakan Chrome lokal dalam mode headless dan profil sementara. Atur `BROWSER_BIN` jika lokasi Chrome/Edge berbeda. Hasil tangkapan layar QA disimpan di `.qa/`.
+
+**DIMENSIA: Lomba Bungkus Kado** (`dimensia/kado.html`) melatih volume dan luas permukaan untuk 1, 2, atau 4 pemain. Setiap pesanan punya 2 langkah: **isi** (volume; permen kubus 1 cm untuk kubus/balok, jeli untuk bangun lain) lalu **bungkus** (luas permukaan dengan kertas kado). Di layar persiapan ada pilihan **Semua bangun** (kubus, balok, prisma segitiga, limas segiempat, tabung, kerucut, bola) atau **Kubus & balok saja**. Tombol **Petunjuk rumus** di kartu soal menampilkan rumus dan tipsnya hanya kalau diketuk.
+
+## Bab 3: Pengukuran
+
+`pengukuran/index.html` adalah menu Bab 3 dengan empat tokoh baru, masing-masing mewakili satu besaran:
+
+| Tokoh | Wujud | Besaran |
+| --- | --- | --- |
+| **Meto** | meteran gulung | panjang (km–mm) |
+| **Lita** | gelas ukur | volume (kl–ml) |
+| **Grama** | anak timbangan | berat (kg–mg) |
+| **Tiko** | jam weker | waktu |
+
+Singkatan tangga satuan (huruf depan tiap kata = satuannya, dari atas ke bawah):
+
+- Panjang: **Ka-He-Da-M-De-Ce-Me** · “Kakek Hendak Datang Mampir Dengan Cucu Manis” (km, hm, dam, m, dm, cm, mm)
+- Volume: **Ka-He-Da-L-De-Ce-Me** · “Kakek Hendak Datang Lewat Dengan Cucu Manis” (kl, hl, dal, l, dl, cl, ml)
+- Berat: **Ka-He-Da-G-De-Ce-Me** · “Kakek Hendak Datang Gembira Dengan Cucu Manis” (kg, hg, dag, g, dg, cg, mg)
+- Aturan: **TuKa NaBa** · TUrun 1 anak tangga = KAli 10, NAik 1 anak tangga = BAgi 10
+- Waktu: **Mi-Ha-Ja-Me-De = 7 · 24 · 60 · 60** · “Mimi Harus Jaga Meja Depan” (minggu, hari, jam, menit, detik)
+- Tahun: **Lu-Wi-Da-A** · “Lucu Wiwi Dapat Apel”: lustrum 5, windu 8, dasawarsa 10, abad 100 tahun
+
+Isi Bab 3:
+
+- **Lab Tangga Satuan** (`pengukuran/tangga.html`): tangga 3D per besaran, singkatan yang bisa diketuk, **Coba ubah sendiri** (ketik angka, pilih satuan, tokoh melompat dan setiap langkah ×10 / :10 ditulis), tantangan acak dengan pembahasan, dan fakta tambahan (1 liter = 1 dm³, 1 ml = 1 cm³, 1 ton = 1.000 kg).
+- **Lab Alat Ukur** (`pengukuran/tangga.html#alat`): penggaris, gelas ukur, timbangan, dan jam yang bisa digeser, lalu tantangan membaca alat.
+- **Game Lompat Tangga** (`pengukuran/lomba.html`): lomba 1, 2, atau 4 pemain dengan layar terbagi, pola yang sama dengan Kota Langit dan Bungkus Kado (pilih tokoh, persiapan, podium 3D). Materi: campur, panjang, volume, berat, atau waktu. Tingkat: Pemula, Penjelajah, Ahli Ukur. Jenis soal: ubah satuan, samakan satuan lalu jumlahkan, bandingkan, soal cerita, membaca alat ukur, lama waktu, dan pukul selesai.
+
+```
+pengukuran/
+├── index.html          Menu Bab 3: tangga 3D dan empat tokoh
+├── tangga.html         Lab Tangga Satuan dan Lab Alat Ukur
+├── lomba.html          Game Lompat Tangga (1, 2, atau 4 pemain)
+├── css/ukur.css        Tambahan tampilan (tema dari ../css/style.css dan ../dimensia/css/)
+└── js/
+    ├── ukur-data.js    Tangga satuan, singkatan, konversi desimal tepat, pembuat soal, gambar alat ukur
+    ├── tokoh.js        Tokoh 3D Meto, Lita, Grama, Tiko
+    ├── tangga-scene.js Tangga satuan 3D dan animasi lompat
+    ├── ukur-lab.js     Alur Lab
+    └── lomba-game.js   Alur game lomba
+```
+
+Game Bab 3 memakai ulang renderer, suara, dan podium Kota Langit dari `dimensia/js/`.
 
 ## Teknologi
 
