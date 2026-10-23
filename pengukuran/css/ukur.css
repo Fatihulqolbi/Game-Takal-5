@@ -64,7 +64,7 @@
 .lab .soal-opsi .answer-option{font-size:clamp(15px,1.4vw,22px);min-height:0;padding:.35em .5em;border-width:3px;border-radius:14px;box-shadow:0 4px 0 var(--ink)}
 .bonus{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px;font-size:clamp(14px,1.25vw,18px)}
 .bonus b{color:#c2185b}
-.lab .lbl{display:block;margin-top:10px;font-weight:900;font-size:clamp(13px,1.1vw,16px);letter-spacing:.06em;text-transform:uppercase}
+.lab .lbl{display:block;margin-top:10px;font-weight:800;font-size:clamp(14px,1.15vw,17px)}
 #geser{width:100%;accent-color:var(--merah);height:28px}
 .bacaan{margin:.3em 0;font-size:clamp(18px,1.7vw,26px);font-family:var(--display);font-weight:700}
 .bacaan b{color:#c2185b}
@@ -88,3 +88,4 @@
 .hub-singkat span{display:flex;flex-direction:column;align-items:center;background:var(--paper);border:3px solid var(--ink);border-radius:14px;padding:.25em .8em;font-size:clamp(12px,1vw,15px);line-height:1.2}
 .hub-singkat b{font-family:var(--display);font-weight:800;font-size:clamp(15px,1.4vw,21px);color:#c2185b}
 @media (max-width:760px){.hub-menu{grid-template-columns:minmax(0,1fr)}}
+.ukur .kode-ingat{white-space:nowrap}

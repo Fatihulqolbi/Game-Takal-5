@@ -27,7 +27,7 @@ test('Pengukuran: semua soal punya 4 pilihan berbeda dan kunci benar',()=>{
     if(j!=='campur')assert.equal(q.besaran,j==='waktu'&&q.jenis==='alat'?'waktu':j,m);
     if(q.jenis==='ubah'&&q.besaran!=='waktu'){const L=q.lompat;assert.equal(angkaDari(q.opsi[q.benar]),U.ubah(L.besaran,L.nilai,L.dari,L.ke),m)}
     if(q.jenis==='ubah'&&q.besaran==='waktu'){const L=q.lompat;assert(Math.abs(angkaDari(q.opsi[q.benar])-L.nilai*U.faktorWaktu(L.dari,L.ke))<1e-9,m)}
-    if(q.jenis==='banding'){assert(q.kunci.at(-1).endsWith(q.opsi[q.benar]),m);const T=U.TANGGA[q.besaran];for(const bagian of q.kunci[1].split(' · ')){const[kiri,kanan]=bagian.split(' = ');if(!kanan)continue;const[x,u]=kiri.split(' '),[y]=kanan.split(' ');assert.equal(U.ubah(q.besaran,angkaDari(x),u,T.pokok),angkaDari(y),m+' '+bagian)}}
+    if(q.jenis==='banding'){assert(q.kunci.at(-1).endsWith(q.opsi[q.benar]),m);const T=U.TANGGA[q.besaran];for(const bagian of q.kunci[1].split('; ')){const[kiri,kanan]=bagian.split(' = ');if(!kanan)continue;const[x,u]=kiri.split(' '),[y]=kanan.split(' ');assert.equal(U.ubah(q.besaran,angkaDari(x),u,T.pokok),angkaDari(y),m+' '+bagian)}}
     if(q.lompat){const T=U.TANGGA[q.lompat.besaran].satuan;assert(T.includes(q.lompat.dari)&&T.includes(q.lompat.ke),m)}}
   for(const k of['panjang:ubah','panjang:jumlah','panjang:banding','panjang:cerita','panjang:alat','volume:alat','berat:alat','berat:cerita','volume:cerita',
     'waktu:ubah','waktu:gabung','waktu:pecah','waktu:durasi','waktu:selesai','waktu:tahun','waktu:detik','waktu:alat'])assert(jenis.has(k),'tidak muncul: '+k);

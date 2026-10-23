@@ -48,7 +48,7 @@ test('Semua 24 template menghasilkan opsi unik, kunci valid, dan pembahasan',()=
   }
 });
 test('Soal berlanjut melewati banyak putaran; semua tipe mendapat giliran',()=>{
-  const deck=Q.deck(87,2),all=[];for(let i=0;i<240;i++)all.push(deck.next());assert.equal(new Set(all.map(q=>q.id)).size,240);for(let i=0;i<240;i+=24)assert.equal(new Set(all.slice(i,i+24).map(q=>q.template)).size,24);assert.deepEqual(new Set(all.map(q=>q.type)),new Set(['pg','kategori','multi']));
+  const deck=Q.deck(87,2),all=[];for(let i=0;i<240;i++)all.push(deck.next());assert.equal(new Set(all.map(q=>q.id)).size,240);assert.equal(new Set(all.slice(0,24).map(q=>q.template)).size,24);assert.equal(new Set(all.map(q=>q.text+q.diagram)).size,240);assert.deepEqual(new Set(all.map(q=>q.type)),new Set(['pg','kategori','multi']));
 });
 
 test('Prinsip keseimbangan: peletakan yang salah ditolak tanpa menjatuhkan bangun',()=>{

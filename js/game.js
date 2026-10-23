@@ -119,7 +119,7 @@ function big(text,cls,anim){const b=$('big');b.className='';void b.offsetWidth;b
 const swatch=d=>d.id==='panda'?'linear-gradient(90deg,#2a2a35 30%,#fff 30%)':d.color;
 
 /* menu */
-function renderRules(){$('rules').textContent=`${ST.qTime} detik tiap soal · Benar +5 poin${ST.penalty?` · Salah −${ST.penalty}`:''} · Soal ke-3, 6, 9, … soal cerita`}
+function renderRules(){$('rules').textContent=`${ST.qTime} detik tiap soal. Benar +5 poin${ST.penalty?`, salah −${ST.penalty}`:''}. Soal ke-3, 6, 9, dan seterusnya adalah soal cerita.`}
 function renderTopics(){const w=$('topics');w.innerHTML='';
   const all=document.createElement('button');all.className='chip';all.setAttribute('aria-pressed',ST.topics.length===6);all.innerHTML='<b>★</b>Semua bab';
   tap(all,()=>{ST.topics=[1,2,3,4,5,6];save();sfx('tap');renderTopics()});w.appendChild(all);
@@ -152,7 +152,7 @@ function renderSetup(){
   chipGroup($('durChips'),[[3,'3 menit'],[5,'5 menit'],[10,'10 menit'],[15,'15 menit']],()=>ST.sessionMin,v=>ST.sessionMin=v);
   chipGroup($('qtChips'),[[15,'15 dtk'],[20,'20 dtk'],[30,'30 dtk'],[45,'45 dtk'],[60,'60 dtk']],()=>ST.qTime,v=>ST.qTime=v);
   chipGroup($('penChips'),[[0,'Tidak dikurangi'],[5,'−5 poin'],[10,'−10 poin']],()=>ST.penalty,v=>ST.penalty=v);
-  chipGroup($('themeChips'),[['petualangan','Petualangan','Chiptune semangat · rekomendasi'],['ceria','Ceria Gelembung','Imut & memantul, gaya Pou']],()=>ST.theme,v=>{ST.theme=v;SND.step=0});
+  chipGroup($('themeChips'),[['petualangan','Petualangan','Chiptune semangat (rekomendasi)'],['ceria','Ceria Gelembung','Imut & memantul, gaya Pou']],()=>ST.theme,v=>{ST.theme=v;SND.step=0});
   $('durVal').textContent=ST.sessionMin+' menit';$('qtVal').textContent=ST.qTime+' detik';
   $('musT').setAttribute('aria-pressed',ST.music);$('musT').textContent='Musik: '+(ST.music?'nyala':'mati');
   $('fxT').setAttribute('aria-pressed',ST.fx);$('fxT').textContent='Efek suara: '+(ST.fx?'nyala':'mati');
@@ -185,7 +185,7 @@ function makePlayer(i,def){
   const ar=makeArena();const cam=new THREE.PerspectiveCamera(42,1,.1,100);
   const hero=makeChar(def);hero.position.copy(H);ar.scene.add(hero);
   const el=document.createElement('div');el.className='panel p'+(i+1);
-  el.innerHTML=`<div class="hud"><div class="who"><span class="tag t${i}">P${i+1}</span><span class="gn"><b></b><small>${def.name} · ${def.kind}</small></span></div>
+  el.innerHTML=`<div class="hud"><div class="who"><span class="tag t${i}">P${i+1}</span><span class="gn"><b></b><small>${def.name}, ${def.kind}</small></span></div>
     <div class="clock"><svg viewBox="0 0 100 100"><circle class="face" cx="50" cy="50" r="46"/><circle class="trk" cx="50" cy="50" r="38"/><circle class="arc" cx="50" cy="50" r="38" stroke-dasharray="${RING}" stroke-dashoffset="0"/></svg><b>${ST.qTime}</b><small>detik</small></div>
     <div class="score"><span>Poin</span><b>0</b></div></div>
   <div class="stage"><div class="popmsg"></div></div>
@@ -207,7 +207,7 @@ function startGame(){
     if(k<3){big(s);sfx('beep')}else{big(s,'wide');sfx('go');state.running=true;state.players.forEach(nextQ)}},400+k*900));
 }
 function nextQ(p){
-  p.num++;p.q=makeQuestion(ST.topics,p.num);p.time=ST.qTime;p.phase='ask';p.anim=null;p.lastSec=-1;spawnEnemy(p);
+  p.num++;p.q=makeQuestion(ST.topics,p.num,p.seen||(p.seen=new Set()));p.time=ST.qTime;p.phase='ask';p.anim=null;p.lastSec=-1;spawnEnemy(p);
   const q=p.q,u=p.ui;u.card.classList.remove('waiting');
   u.meta.innerHTML=`<span>Soal ${p.num}</span><span class="k-${q.kind}">${KIND[q.kind]}</span><span>${TOPICS[q.topic-1][1]}</span>`;
   u.text.className='qtext'+(q.story?' story':'');u.text.innerHTML=q.text;
@@ -275,7 +275,7 @@ function backdropTex(){return texCanvas(2048,900,(x,w,h)=>{
   [['½',180,300],['¾',1850,330],['⅓',300,760],['⅔',1750,780],['¼',1020,240]].forEach(([s,a,b])=>x.fillText(s,a,b));x.globalAlpha=1;
   x.fillStyle='#e8323c';x.fillRect(0,0,w,46);x.fillStyle='#ffffff';x.fillRect(0,46,w,46);
   x.textAlign='center';x.fillStyle='#e8323c';x.font=`800 96px ${FD}`;x.fillText('APRESIASI JUARA',w/2,440);
-  x.fillStyle='#1e2a4a';x.font=`700 40px ${FB}`;x.fillText('Laskar Pecahan · Latihan TKA Matematika SD · '+dateID(new Date()),w/2,505)})}
+  x.fillStyle='#1e2a4a';x.font=`700 40px ${FB}`;x.fillText('Laskar Pecahan, Latihan TKA Matematika SD, '+dateID(new Date()),w/2,505)})}
 function numTex(n,w,h){return texCanvas(Math.round(220*w),Math.round(220*h),(x,W,H)=>{x.fillStyle='#2f6fd6';x.fillRect(0,0,W,H);x.strokeStyle='#ffffff';x.lineWidth=10;x.strokeRect(16,16,W-32,H-32);
   x.fillStyle='#ffffff';x.textAlign='center';x.textBaseline='middle';x.font=`800 ${Math.round(Math.min(H*.62,W*.5))}px ${FD}`;x.fillText(n,W/2,H*.56)})}
 function boardTex(title,name,score){return texCanvas(640,400,(x,w,h)=>{
@@ -334,12 +334,12 @@ function showPodium(){
   const winners=ranked.filter(p=>p.place===1);
   pod=buildPodium(ranked,solo);
   $('podTitle').textContent=solo?`Hebat, ${ranked[0].group}!`:winners.length>1?'Sama kuat! Juara bersama!':`Selamat, ${winners[0].group}!`;
-  $('podSub').textContent=`${ST.sessionMin} menit · ${ST.qTime} detik per soal · salah ${ST.penalty?'−'+ST.penalty:'tidak dikurangi'}`;
+  $('podSub').textContent=`${ST.sessionMin} menit, ${ST.qTime} detik per soal, salah ${ST.penalty?'−'+ST.penalty:'tidak dikurangi'}`;
   const wrap=$('podCards');wrap.innerHTML='';wrap.className='res'+(ps.length>2?' many':'');
   ranked.forEach(p=>{const n=p.correct+p.wrong;const c=document.createElement('div');c.className='rcard'+(p.place===1?' win':'');
     c.innerHTML=`<div class="rank${p.place>1?' r'+Math.min(p.place,4):''}">${p.place}</div><div class="nm"></div><div class="big">${p.score}<small>poin</small></div>
       <div class="stats"><span>Benar ${p.correct}</span><span>Belum tepat ${p.wrong}</span><span>Ketepatan ${n?Math.round(p.correct/n*100):0}%</span></div><div class="msg">${praise(p)}</div>`;
-    const nm=c.querySelector('.nm');nm.textContent=p.group;const sm=document.createElement('small');sm.textContent=`${p.def.name} · ${p.def.kind}`;nm.appendChild(sm);wrap.appendChild(c)});
+    const nm=c.querySelector('.nm');nm.textContent=p.group;const sm=document.createElement('small');sm.textContent=`${p.def.name}, ${p.def.kind}`;nm.appendChild(sm);wrap.appendChild(c)});
   showScreen('podium');sfx('fanfare');
 }
 tap($('again'),()=>{sfx('tap');startGame()});
@@ -400,8 +400,8 @@ const STATUS={benar:['ok','✓ Benar'],salah:['no','✗ Belum tepat'],habis:['na
 function buildReview(withKey){
   const ps=state.players.slice().sort((a,b)=>a.i-b.i);const when=state.startedAt||new Date();
   const used=[...new Set(ps.flatMap(p=>p.hist.map(h=>h.topic)))].sort();
-  let h=`<div class="rv"><div class="flag"></div><h1>${withKey?'Soal &amp; Pembahasan':'Lembar Latihan'} · Laskar Pecahan</h1>
-  <p class="sub">Latihan TKA Matematika SD · Bab Pecahan · ${dateID(when)} · ${ST.sessionMin} menit · ${ST.qTime} detik per soal</p>
+  let h=`<div class="rv"><div class="flag"></div><h1>${withKey?'Soal &amp; Pembahasan':'Lembar Latihan'}: Laskar Pecahan</h1>
+  <p class="sub">Latihan TKA Matematika SD, bab pecahan. ${dateID(when)}, ${ST.sessionMin} menit, ${ST.qTime} detik per soal.</p>
   <table><tr><th>Kelompok</th><th>Karakter</th><th>Poin</th><th>Benar</th><th>Belum tepat</th><th>Jumlah soal</th></tr>
   ${ps.map(p=>`<tr><td><b>${esc(p.group)}</b></td><td>${p.def.name} (${p.def.kind})</td><td>${p.score}</td><td>${p.correct}</td><td>${p.wrong}</td><td>${p.hist.length}</td></tr>`).join('')}</table>
   <div class="how"><b>Cara belajar dengan lembar ini</b><ol>
@@ -417,8 +417,8 @@ function buildReview(withKey){
       <div class="qt${x.kind==='cerita'?' story':''}">${x.text}</div>
       <ol class="ol">${x.options.map((o,i)=>`<li class="${withKey&&i===ci?'key':''}${withKey&&i===pi&&i!==ci?' pick':''}"><i>${L(i)}</i><span>${o.html}</span>${withKey&&i===ci?'<em>kunci</em>':withKey&&i===pi?'<em>jawaban kelompok</em>':''}</li>`).join('')}</ol>`;
       if(withKey){const [cls,txt]=STATUS[x.status];
-        h+=`<div class="verdict ${cls}">${txt}${x.status==='salah'?` · Kelompok memilih ${L(pi)}, jawaban benar ${L(ci)}`:''}</div>
-        <div class="steps"><b>Pembahasan · Jawaban: ${L(ci)}. ${x.correctHtml}</b><ol>${(x.steps||[]).map(s=>`<li>${s}</li>`).join('')}</ol></div>`}
+        h+=`<div class="verdict ${cls}">${txt}${x.status==='salah'?`. Kelompok memilih ${L(pi)}, jawaban benar ${L(ci)}.`:''}</div>
+        <div class="steps"><b>Pembahasan. Jawaban: ${L(ci)}. ${x.correctHtml}</b><ol>${(x.steps||[]).map(s=>`<li>${s}</li>`).join('')}</ol></div>`}
       else{h+=`<div class="write"></div><div class="write"></div>`;keyRows.push([p.group,x.num,L(ci)])}
       h+=`</div>`});
   });

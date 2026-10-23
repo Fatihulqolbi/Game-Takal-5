@@ -190,6 +190,7 @@ Pemeriksaan pengembang (tanpa `npm install`):
 ```bash
 node --test tests/dimensia.test.cjs
 node --test tests/pengukuran.test.cjs
+node --test tests/soal-unik.test.cjs
 node tests/browser-game.cjs
 node tests/browser-game.cjs --extra
 ```
@@ -222,6 +223,7 @@ Isi Bab 3:
 
 - **Lab Tangga Satuan** (`pengukuran/tangga.html`): tangga 3D per besaran, singkatan yang bisa diketuk, **Coba ubah sendiri** (ketik angka, pilih satuan, tokoh melompat dan setiap langkah ×10 / :10 ditulis), tantangan acak dengan pembahasan, dan fakta tambahan (1 liter = 1 dm³, 1 ml = 1 cm³, 1 ton = 1.000 kg).
 - **Lab Alat Ukur** (`pengukuran/tangga.html#alat`): penggaris, gelas ukur, timbangan, dan jam yang bisa digeser, lalu tantangan membaca alat.
+- Soal di semua game (Laskar Pecahan, Kota Langit, Bungkus Kado, Lompat Tangga) tidak berulang dalam satu sesi; uji `tests/soal-unik.test.cjs` memeriksanya.
 - **Game Lompat Tangga** (`pengukuran/lomba.html`): lomba 1, 2, atau 4 pemain dengan layar terbagi, pola yang sama dengan Kota Langit dan Bungkus Kado (pilih tokoh, persiapan, podium 3D). Materi: campur, panjang, volume, berat, atau waktu. Tingkat: Pemula, Penjelajah, Ahli Ukur. Jenis soal: ubah satuan, samakan satuan lalu jumlahkan, bandingkan, soal cerita, membaca alat ukur, lama waktu, dan pukul selesai.
 
 ```

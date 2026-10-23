@@ -34,7 +34,7 @@ const KadoGame=(()=>{
   function buildPlayer(i,seed){
     const p=C.player(i,settings.names[i],settings.characters[i],seed,settings.level,settings.bangun);p.sisa=p.order.sabar;p.jeda=0;p.sibuk=false;p.tick=-1;
     const el=document.createElement('article');p.el=el;el.className='arena';el.style.setProperty('--player',colors[i]);el.setAttribute('aria-label','Arena '+p.name);
-    el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama} · penjaga toko</small></span></div><div class="tower-score"><b>0</b><small>KADO SEMPURNA</small></div></header>
+    el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama}, penjaga toko</small></span></div><div class="tower-score"><b>0</b><small>kado sempurna</small></div></header>
       <div class="arena-body"><div class="tower-view scene-slot"><div class="pesanan-tag"></div><div class="clue-pop" hidden></div><div class="robot-bubble"></div></div><section class="question-card kado-card" aria-label="Langkah pesanan pemain ${i+1}"></section></div>
       <footer class="build-footer"><div class="kado-langkah"><i data-l="isi"></i><span>Isi</span><i data-l="bungkus"></i><span>Bungkus</span></div><span class="drag-instruction">Kado terkirim: <b class="kirim">0</b></span></footer>`;
     $('arenas').appendChild(el);p.view=S3.create(el.querySelector('.tower-view'),p.character,colors[i]);
@@ -46,7 +46,7 @@ const KadoGame=(()=>{
     const bangun=o.namaBangun.toLowerCase(),pi=o.bulat?' Pakai π = 22/7.':'';
     const tanya=o.kotak?(isi?`Berapa <b>permen kubus 1 cm</b> yang pas mengisi penuh kotak <b>${o.p} × ${o.l} × ${o.t} cm</b>?`:`Berapa <b>cm² kertas kado</b> yang pas untuk menutup <b>semua sisi</b> kotak ${o.p} × ${o.l} × ${o.t} cm?`)
       :isi?`Berapa <b>cm³ jeli</b> yang pas mengisi penuh <b>${bangun}</b> ini? <small>(${o.teks})</small>${pi}`:`Berapa <b>cm² kertas kado</b> yang pas menutup <b>seluruh kulit</b> ${bangun} ini? <small>(${o.teks})</small>${pi}`;
-    card.innerHTML=`<div class="question-head"><span class="quake-label">${isi?'LANGKAH 1 · ISI = VOLUME':'LANGKAH 2 · BUNGKUS = LUAS PERMUKAAN'}</span><button type="button" class="clue-btn" data-clue aria-expanded="false"><i>?</i>Petunjuk rumus</button><b class="question-timer">${Math.ceil(p.sisa)}</b></div><div class="question-track"><i></i></div>
+    card.innerHTML=`<div class="question-head"><span class="quake-label">${isi?'Langkah 1: isi sesuai volume':'Langkah 2: bungkus sesuai luas permukaan'}</span><button type="button" class="clue-btn" data-clue aria-expanded="false"><i>?</i>Petunjuk rumus</button><b class="question-timer">${Math.ceil(p.sisa)}</b></div><div class="question-track"><i></i></div>
       <p class="question-text">${tanya}</p>
       <div class="question-options">${opsi.map((v,j)=>`<button class="answer-option" data-opsi="${j}"><b>${'ABCD'[j]}</b><span>${C.angka(v)} ${isi?o.satuanIsi:'cm²'}</span></button>`).join('')}</div>`;
     tutupPetunjuk(p);
@@ -54,7 +54,7 @@ const KadoGame=(()=>{
   /* petunjuk rumus: hanya muncul kalau diketuk, supaya anak mencoba mengingat dulu */
   function petunjuk(p){const pop=p.el.querySelector('.clue-pop'),btn=p.el.querySelector('[data-clue]');if(!pop.hidden)return tutupPetunjuk(p);
     const o=p.order,isi=p.phase==='isi',t=o.petunjuk;A.play('tap');
-    pop.innerHTML=`<b>Petunjuk · ${o.namaBangun}</b><span class="rumus">${isi?t.v:t.l}</span><small>${isi?t.tipV:t.tipL}</small>${o.bulat?'<small>π = 22/7</small>':''}`;pop.hidden=false;if(btn)btn.setAttribute('aria-expanded','true')}
+    pop.innerHTML=`<b>Petunjuk rumus ${o.namaBangun.toLowerCase()}</b><span class="rumus">${isi?t.v:t.l}</span><small>${isi?t.tipV:t.tipL}</small>${o.bulat?'<small>π = 22/7</small>':''}`;pop.hidden=false;if(btn)btn.setAttribute('aria-expanded','true')}
   function tutupPetunjuk(p){const pop=p.el.querySelector('.clue-pop');pop.hidden=true;p.el.querySelector('[data-clue]')?.setAttribute('aria-expanded','false')}
   function mulaiPesanan(p,awal=false){p.phase='isi';p.sisa=p.order.sabar;p.tick=-1;p.sibuk=false;S3.pesanan(p.view,p.order);
     p.el.querySelector('.pesanan-tag').innerHTML=`<small>Pesanan ${p.urut+1}</small>${p.order.nama}`;kartu(p);
@@ -73,9 +73,9 @@ const KadoGame=(()=>{
     talk(p,h.sempurna?'Kado sempurna! Pelanggan senang sekali!':habis?'Yaah, pelanggannya pergi karena menunggu terlalu lama.':'Kadonya belum sempurna. Lihat pembahasannya!',h.sempurna?'senang':'bingung');
     p.el.querySelector('.tower-score>b').textContent=p.sempurna;
     const card=p.el.querySelector('.kado-card');card.classList.add('bahas');card.classList.toggle('bad',!h.sempurna);
-    const baris=(ok,judul,isi,pilih,unit)=>`<div class="kunci-baris ${ok?'ok':'no'}"><b>${judul}</b><span>${isi}${pilih===null?' (belum dijawab)':ok?'':` · pilihanmu ${C.angka(pilih)} ${unit}`}</span></div>`;tutupPetunjuk(p);
+    const baris=(ok,judul,isi,pilih,unit)=>`<div class="kunci-baris ${ok?'ok':'no'}"><b>${judul}</b><span>${isi}${pilih===null?' (belum dijawab)':ok?'':`. Pilihanmu ${C.angka(pilih)} ${unit}`}</span></div>`;tutupPetunjuk(p);
     card.innerHTML=`<div class="bahas-hasil"><b>${h.sempurna?'Kado sempurna!':habis?'Pelanggan pergi':'Kado belum sempurna'}</b><span>${o.nama}</span></div><div class="bahas-kunci">${baris(h.v,'Isi = volume',o.rumusV+' '+(o.kotak?'permen':'cm³'),h.pilihV,o.satuanIsi)}${baris(h.l,'Bungkus = luas',o.rumusL+' cm²',h.pilihL,'cm²')}</div>
-      <p class="kado-ingat">Volume menghitung <b>isi</b> (kubus satuan, cm³). Luas permukaan menghitung <b>kulit</b> (persegi satuan, cm²).</p><button class="primary-btn next-block" data-lanjut>Pesanan berikutnya ↗ <span class="hitung">${p.jeda}</span></button>`;
+      <p class="kado-ingat">Volume menghitung <b>isi</b> (kubus satuan, cm³). Luas permukaan menghitung <b>kulit</b> (persegi satuan, cm²).</p><button class="primary-btn next-block" data-lanjut>Pesanan berikutnya <span class="hitung">${p.jeda}</span></button>`;
     p.el.querySelector('.kirim').textContent=p.riwayat.length}
   /* kotak yang sudah jadi tetap terlihat selama pembahasan, baru dikirim saat pesanan berikutnya */
   function berikut(p){if(p.phase!=='hasil')return;const h=p.riwayat.at(-1);C.lanjut(p);p.phase='kirim';

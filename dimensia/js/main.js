@@ -42,7 +42,7 @@ function musik(){
 let layar='home',S=null,kubusAktif=[];
 function tampil(n){layar=n;for(const id of['home','pilih','main'])$(id).hidden=id!==n;document.body.className=n==='main'?'terang':'gelap';$('hasil').hidden=true}
 function pemandu(){return ROBOT.find(r=>r.id===ST.pemandu)||ROBOT[0]}
-function kartu(){const r=pemandu();$('kartu').innerHTML=`<i style="background:${r.warna}"></i><b>${r.nama}</b> · ${r.julukan}. “${r.kata}”<br><small>Ketuk robot untuk memilih pemandu. Geser untuk memutarnya.</small>`}
+function kartu(){const r=pemandu();$('kartu').innerHTML=`<i style="background:${r.warna}"></i><b>${r.nama}</b>, ${r.julukan}. “${r.kata}”<br><small>Ketuk robot untuk memilih pemandu. Geser untuk memutarnya.</small>`}
 function ucap(teks,aksi){$('ucap').innerHTML=`<b>${pemandu().nama}:</b> ${teks}`;if(aksi)PEMANDU.aksi(aksi)}
 function tombolSuara(){$('bMusik').setAttribute('aria-pressed',ST.musik);$('bFx').setAttribute('aria-pressed',ST.fx);$('bTimer').setAttribute('aria-pressed',ST.timer)}
 function segarkanPilih(){
@@ -138,8 +138,8 @@ function tampilHasil(){
   const n=S.daftar.length,b=S.hasil.filter(h=>h.benar).length;
   let h=`<h2>${S.mode==='misi'?'Misi selesai':'Simulasi selesai'}</h2>`;
   if(S.mode==='misi')h+=`<div class="bintang-besar">${'★'.repeat(S.bintang)}<span>${'★'.repeat(3-S.bintang)}</span></div><p>1 bintang: misi selesai. 2 bintang: paling banyak satu jawaban keliru. 3 bintang: semua tepat dan dugaan awal hampir selalu tepat.</p>`;
-  h+=`<p><b>Benar ${b} dari ${n} soal</b>${S.mode==='tka'?` · Nilai ${Math.round(b/n*100)}`:''}</p><div class="rekap">`;
-  S.daftar.forEach((s,i)=>{const r=S.hasil[i];h+=`<div class="${r.benar?'ok':'no'}"><b>${r.benar?'✔':'✘'}</b><span>Soal ${i+1} · ${NAMA_JENIS[s.jenis]}${r.pilih===null?' (belum dijawab)':''}</span><button class="btn kecil" data-tinjau="${i}">Pembahasan</button></div>`});
+  h+=`<p><b>Benar ${b} dari ${n} soal</b>${S.mode==='tka'?`, nilai ${Math.round(b/n*100)}`:''}</p><div class="rekap">`;
+  S.daftar.forEach((s,i)=>{const r=S.hasil[i];h+=`<div class="${r.benar?'ok':'no'}"><b>${r.benar?'✔':'✘'}</b><span>Soal ${i+1}: ${NAMA_JENIS[s.jenis]}${r.pilih===null?' (belum dijawab)':''}</span><button class="btn kecil" data-tinjau="${i}">Pembahasan</button></div>`});
   h+='</div>';
   const kuasai=[],latih=[];
   for(const j of Object.keys(NAMA_JENIS)){const idx=S.daftar.map((s,i)=>s.jenis===j?i:-1).filter(i=>i>=0);if(!idx.length)continue;(idx.every(i=>S.hasil[i].benar)?kuasai:latih).push(NAMA_JENIS[j])}
@@ -172,7 +172,7 @@ function panel(){
   const p=$('panel');if(S.mode==='lab'){p.hidden=true;return}
   p.hidden=false;
   const s=soal(),bahas=S.tahap==='bahas',hasil=S.hasil[S.i];
-  let h=`<div class="meta">Soal ${S.i+1} dari ${S.daftar.length} · ${s.jenis==='pgk'?'PGK-Kategori':'Pilihan Ganda'} · Kode soal ${s.seed}</div><p class="tanya">${s.teks}</p>`;
+  let h=`<div class="meta">Soal ${S.i+1} dari ${S.daftar.length}, ${s.jenis==='pgk'?'PGK-Kategori':'Pilihan Ganda'}, kode soal ${s.seed}</div><p class="tanya">${s.teks}</p>`;
   if(s.jenis==='pgk'){
     h+=s.pernyataan.map((q,i)=>{const j=S.pilih[i];
       return`<div class="pern ${bahas?(j===q.benar?'ok':'no'):''}"><div class="pt"><b>${i+1}</b><span>${q.teks}</span></div>

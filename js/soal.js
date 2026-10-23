@@ -272,8 +272,10 @@ const TIPS={
   6:['Operasi Campuran','Kerjakan kali dan bagi lebih dulu, baru tambah dan kurang. Kalau ada kurung, kerjakan isi kurung paling awal.']
 };
 const KIND={biasa:'Soal biasa',konsep:'Konsep',cerita:'Soal cerita'};
-function makeQuestion(topics,num){
-  const kind=num%3===0?'cerita':num%3===1?'biasa':'konsep';
-  for(let i=0;i<40;i++){try{const t=pick(topics);const q=pick(GEN[t][kind])();if(q.options.length>=3){q.topic=t;q.kind=kind;return q}}catch(e){}}
-  return makeQuestion([1],num);
+/* seen (opsional) = teks soal yang sudah keluar di sesi ini; soal yang sama dicari gantinya supaya tidak berulang */
+function makeQuestion(topics,num,seen){
+  const kind=num%3===0?'cerita':num%3===1?'biasa':'konsep';let cadangan=null;
+  for(let i=0;i<120;i++){try{const t=pick(topics);const q=pick(GEN[t][kind])();if(q.options.length>=3){q.topic=t;q.kind=kind;const k=q.text+'|'+q.options.map(o=>o.key).sort().join(',');if(!seen||!seen.has(k)){seen?.add(k);return q}cadangan=cadangan||q}}catch(e){}}
+  if(cadangan)return cadangan;
+  return makeQuestion([1],num,seen);
 }

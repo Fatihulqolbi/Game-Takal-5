@@ -33,7 +33,7 @@ const UkurLab=(()=>{
       <section class="lab-kartu"><h2>Singkatan ${T.nama.toLowerCase()} <small>ketuk satuannya</small></h2>
         <div class="tangga-kode ${w?'lima':''}">${kode}</div>
         <p class="kalimat">“${kalimat}”</p>
-        <p class="aturan">${w?`<b>${S.kode}</b><br>1 minggu = 7 hari · 1 hari = 24 jam · 1 jam = 60 menit · 1 menit = 60 detik`:`<b>${UK.SINGKAT.aturan.kode}</b> · TUrun 1 anak tangga = KAli 10 · NAik 1 anak tangga = BAgi 10`}</p></section>
+        <p class="aturan">${w?`<b>${S.kode}</b>: 1 minggu = 7 hari, 1 hari = 24 jam, 1 jam = 60 menit, 1 menit = 60 detik.`:`<b>${UK.SINGKAT.aturan.kode}</b>: ${UK.SINGKAT.aturan.kalimat}.`}</p></section>
       <section class="lab-kartu"><h2>Coba ubah sendiri</h2>
         <div class="ubah-baris"><input id="nilai" inputmode="decimal" autocomplete="off" aria-label="Angka yang diubah" value="${s.nilai}"><div class="chips rapat" role="group" aria-label="Satuan asal">${unit('dari')}</div></div>
         <div class="ubah-baris"><span class="ke">jadi</span><div class="chips rapat" role="group" aria-label="Satuan tujuan">${unit('ke')}</div></div>
@@ -63,7 +63,9 @@ const UkurLab=(()=>{
     box.innerHTML=`<p class="soal-teks">${q.teks}</p><div class="soal-opsi">${q.opsi.map((o,j)=>`<button class="answer-option${q.dijawab!==undefined?j===q.benar?' correct':j===q.dijawab?' wrong':'':''}" data-jawab="${j}" ${q.dijawab!==undefined?'disabled':''}><b>${'ABCD'[j]}</b><span>${o}</span></button>`).join('')}</div>
       ${q.dijawab!==undefined?`<ol class="langkah">${q.kunci.map(k=>`<li>${k}</li>`).join('')}</ol><button class="chunky go" data-soal>Soal berikutnya</button>`:''}`}
   function soalBaru(){if(sibuk)return;const alat=tab==='alat',s=alat?alatSt:st[tab];
-    s.soal=alat?UK.alat(s.seed+s.n*7919,s.lv,ALAT[alatSt.i].besaran):UK.soal(s.seed,s.n,s.lv,tab);A.play('tap');
+    /* soal yang sudah pernah keluar di tab ini tidak diulang */
+    s.dipakai=s.dipakai||new Set();const buat=c=>alat?UK.alat(s.seed+s.n*7919+c*104723,s.lv,ALAT[alatSt.i].besaran):UK.soal(s.seed,s.n,s.lv,tab,c);
+    for(let c=0;c<80;c++){s.soal=buat(c);if(!s.dipakai.has(UK.kunciSoal(s.soal)))break}s.dipakai.add(UK.kunciSoal(s.soal));A.play('tap');
     if(alat){$('alatGambar').innerHTML=s.soal.gambar;$('bacaan').textContent='Tantangan: baca alatnya!';$('geser').disabled=true}
     else{const q=s.soal,v=views[tab];if(q.lompat){S3.bangun(v,q.lompat.besaran);S3.taruh(v,UK.TANGGA[tab].satuan.indexOf(q.lompat.dari));papan(`${UK.angka(q.lompat.nilai)} ${q.lompat.dari}`,'Tantangan')}
       $('alatGambar').hidden=!q.gambar;$('alatGambar').innerHTML=q.gambar||''}
@@ -79,7 +81,7 @@ const UkurLab=(()=>{
     if(a.id==='penggaris'){svg=UK.svgPenggaris(v/10,'pita');teks=`Panjang pita: <b>${UK.angka(v/10)} cm</b> = <b>${v} mm</b>`}
     else if(a.id==='gelas'){svg=UK.svgGelas(v,1000,100);teks=`Air: <b>${UK.angka(v)} ml</b> = <b>${UK.angka(v/1000)} liter</b>`}
     else if(a.id==='timbangan'){svg=UK.svgTimbangan(v,2000,200,'g');teks=`Berat: <b>${UK.angka(v)} g</b> = <b>${UK.angka(v/1000)} kg</b>`}
-    else{const h=Math.floor(v/60)||12,m=v%60;svg=UK.svgJam(h,m);teks=`Pukul <b>${UK.jamTeks(h,m)}</b> · jarum panjang di menit ${m}`}
+    else{const h=Math.floor(v/60)||12,m=v%60;svg=UK.svgJam(h,m);teks=`Pukul <b>${UK.jamTeks(h,m)}</b>, jarum panjang di menit ${m}`}
     $('alatGambar').innerHTML=svg;$('bacaan').innerHTML=teks}
   function panelAlat(){const a=ALAT[alatSt.i];
     $('panel').innerHTML=`

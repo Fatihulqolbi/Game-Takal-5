@@ -27,8 +27,8 @@ const SINGKAT={
   panjang:{kalimat:'Kakek Hendak Datang Mampir Dengan Cucu Manis',kode:'Ka-He-Da-M-De-Ce-Me'},
   volume:{kalimat:'Kakek Hendak Datang Lewat Dengan Cucu Manis',kode:'Ka-He-Da-L-De-Ce-Me'},
   berat:{kalimat:'Kakek Hendak Datang Gembira Dengan Cucu Manis',kode:'Ka-He-Da-G-De-Ce-Me'},
-  waktu:{kalimat:'Mimi Harus Jaga Meja Depan',kode:'Mi-Ha-Ja-Me-De = 7 · 24 · 60 · 60'},
-  aturan:{kode:'TuKa NaBa',kalimat:'TUrun = KAli 10, NAik = BAgi 10'},
+  waktu:{kalimat:'Mimi Harus Jaga Meja Depan',kode:'Mi-Ha-Ja-Me-De'},
+  aturan:{kode:'TuKa NaBa',kalimat:'turun satu anak tangga dikali 10, naik satu anak tangga dibagi 10'},
   tahun:{kode:'Lu-Wi-Da-A',kalimat:'Lucu Wiwi Dapat Apel: Lustrum 5, Windu 8, Dasawarsa 10, Abad 100 tahun'}
 };
 /* fakta tambahan per besaran (dipakai di Lab dan pembahasan) */
@@ -88,7 +88,7 @@ function soalBanding(r,lv,besaran){
   const teks=nilai.map(v=>{const t=tulis(v);return{v,t:`${angka(t.x)} ${t.u}`,x:t.x,u:t.u}});
   const urut=acak(r,teks),benar=teks[0].t,kata=besaran==='volume'?(palingBesar?'paling banyak':'paling sedikit'):besaran==='berat'?(palingBesar?'paling berat':'paling ringan'):(palingBesar?'paling panjang':'paling pendek');
   return{besaran,jenis:'banding',teks:`Mana yang ${kata}?`,opsi:urut.map(t=>t.t),benar:urut.findIndex(t=>t.t===benar),lompat:null,
-    kunci:[`Ubah semua ke ${T.pokok} dulu:`,urut.map(t=>t.u===T.pokok?t.t:`${t.t} = ${angka(t.v)} ${T.pokok}`).join(' · '),`Jadi yang ${kata}: ${benar}`]}}
+    kunci:[`Ubah semua ke ${T.pokok} dulu:`,urut.map(t=>t.u===T.pokok?t.t:`${t.t} = ${angka(t.v)} ${T.pokok}`).join('; '),`Jadi yang ${kata}: ${benar}`]}}
 function soalCerita(r,lv,besaran){
   if(besaran==='berat'){const a=ri(r,1,5),b=ri(r,1,9)*100+(lv===3?ri(r,1,9)*10:0),y=a*1000+b;
     const o=opsi(r,`${angka(y)} g`,acak(r,[a+b,a*100+b,a*10000+b,y+1000].map(v=>`${angka(v)} g`)));
@@ -127,7 +127,7 @@ function soalWaktu(r,lv){
     return{besaran,jenis,teks:`${n} ${u.n} = … tahun`,...o,lompat:null,kunci:[`Ingat ${SINGKAT.tahun.kode}: ${SINGKAT.tahun.kalimat}`,`1 ${u.n} = ${u.t} tahun`,`${n} × ${u.t} = ${y} tahun`]}}
   /* detik: dua anak tangga sekaligus */
   const n=ri(r,2,5),y=n*3600;const o=opsi(r,`${angka(y)} detik`,acak(r,[n*60,n*600,n*360,n*36000].map(v=>`${angka(v)} detik`)));
-  return{besaran,jenis,teks:`${n} jam = … detik`,...o,lompat:{besaran,dari:'jam',ke:'detik',nilai:n},kunci:[`Jam → menit → detik: turun 2 anak tangga`,`× 60 × 60 = × 3.600`,`${n} × 3.600 = ${angka(y)} detik`]}}
+  return{besaran,jenis,teks:`${n} jam = … detik`,...o,lompat:{besaran,dari:'jam',ke:'detik',nilai:n},kunci:[`Dari jam ke menit lalu ke detik: turun 2 anak tangga`,`× 60 × 60 = × 3.600`,`${n} × 3.600 = ${angka(y)} detik`]}}
 
 /* ---------- membaca alat ukur (gambar SVG) ---------- */
 const FONT='font-family="Nunito,Segoe UI,sans-serif" font-weight="800"';
@@ -181,16 +181,20 @@ function soalAlat(r,lv,besaran){
 
 /* ---------- pembuat soal ---------- */
 /* jenis = 'campur' | 'panjang' | 'volume' | 'berat' | 'waktu' */
-function soal(seed,i,level=2,jenis='campur'){
-  const lv=Math.max(1,Math.min(3,level)),r=random(seed+i*7919);
+function soal(seed,i,level=2,jenis='campur',coba=0){
+  const lv=Math.max(1,Math.min(3,level)),r=random(seed+i*7919+coba*104723);
   const besaran=jenis==='campur'?acak(random(seed*31+Math.floor(i/4)*104729),BESARAN)[i%4]:jenis;
   let s;
   if(besaran==='waktu')s=soalWaktu(r,lv);
   else{const tipe=lv===1?pilih(r,['ubah','ubah','ubah','alat']):lv===2?pilih(r,['ubah','ubah','jumlah','alat','cerita']):pilih(r,['ubah','jumlah','banding','cerita','alat']);
     s=tipe==='ubah'?soalUbah(r,lv,besaran):tipe==='jumlah'?soalJumlah(r,lv,besaran):tipe==='banding'?soalBanding(r,lv,besaran):tipe==='cerita'?soalCerita(r,lv,besaran):soalAlat(r,lv,besaran)}
   return{i,gambar:null,...s,ingat:SINGKAT[s.besaran]}}
+/* deretan soal tanpa pengulangan: buat(n, coba) membuat soal ke-n; kalau sama dengan soal sebelumnya, coba lagi dengan angka lain */
+const kunciSoal=q=>q.teks+'|'+q.opsi[q.benar];
+function dek(buat){const daftar=[],dipakai=new Set();
+  return{ambil(i){while(daftar.length<=i){const n=daftar.length;let q;for(let c=0;c<80;c++){q=buat(n,c);if(!dipakai.has(kunciSoal(q)))break}dipakai.add(kunciSoal(q));daftar.push(q)}return daftar[i]},dipakai}}
 /* soal membaca alat ukur saja (dipakai Lab Alat Ukur) */
 function alat(seed,level,besaran){return{gambar:null,...soalAlat(random(seed),Math.max(1,Math.min(3,level)),besaran)}}
-return{TANGGA,BESARAN,SINGKAT,BONUS,TAHUN,geser,angka,ubah,faktorWaktu,jamTeks,lamaTeks,random,soal,alat,svgPenggaris,svgGelas,svgTimbangan,svgJam};
+return{TANGGA,BESARAN,SINGKAT,BONUS,TAHUN,geser,angka,ubah,faktorWaktu,jamTeks,lamaTeks,random,soal,alat,dek,kunciSoal,svgPenggaris,svgGelas,svgTimbangan,svgJam};
 })();
 if(typeof module!=='undefined')module.exports=UK;

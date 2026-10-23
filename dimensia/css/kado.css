@@ -1,8 +1,9 @@
 /* DIMENSIA · Lomba Bungkus Kado: tambahan kecil di atas tema Laskar Pecahan + tata letak arena Kota Langit */
 .kado .pesanan-tag{position:absolute;left:10px;top:10px;z-index:4;background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);padding:.15em .8em .25em;font-family:var(--display);font-weight:800;font-size:clamp(15px,3.4cqw,30px);line-height:1.1;pointer-events:none}
-.kado .pesanan-tag small{display:block;font-family:var(--body);font-size:.5em;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.kado .pesanan-tag small{display:block;font-family:var(--body);font-weight:700;font-size:.52em;opacity:.72}
 .kado .question-text b{color:#c2185b}
-.kado .question-head .quake-label{background:#bfe3ff}
+.kado .question-head .quake-label{background:#bfe3ff;text-transform:none;letter-spacing:0;font-weight:800}
+.kado .tower-score small{text-transform:none;letter-spacing:0;font-size:.62em}
 .kado .kado-card[data-fase="bungkus"] .quake-label{background:#ffd9dc}
 .kado .kado-langkah{display:flex;align-items:center;gap:6px;background:var(--paper);border:3px solid var(--ink);border-radius:99px;padding:.2em .8em;font-weight:800;font-size:clamp(12px,2.4cqw,18px)}
 .kado .kado-langkah i{width:1em;height:1em;border:3px solid var(--ink);border-radius:4px;background:var(--paper)}
@@ -35,7 +36,7 @@
 .kado .clue-btn[aria-expanded="true"]{background:var(--paper);transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
 .kado .clue-pop{position:absolute;z-index:5;left:10px;top:calc(18px + clamp(40px,7.4cqw,64px));max-width:min(70%,480px);display:flex;flex-direction:column;gap:.25em;background:#fff8d6;border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 var(--ink);padding:.5em .8em;animation:clue-in .25s ease-out}
 .kado .clue-pop[hidden]{display:none}
-.kado .clue-pop b{font-size:clamp(11px,2cqw,16px);letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+.kado .clue-pop b{font-size:clamp(12px,2.1cqw,17px);opacity:.8}
 .kado .clue-pop .rumus{font-family:var(--display);font-weight:800;font-size:clamp(15px,3.4cqw,30px);line-height:1.15;color:#c2185b}
 .kado .clue-pop small{font-weight:700;font-size:clamp(11px,2.2cqw,18px);line-height:1.3}
 .kado .question-text small{font-size:.78em;opacity:.85}

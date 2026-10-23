@@ -18,13 +18,13 @@ const KadoCore=(()=>{
   const NAMA={kubus:'Kubus',balok:'Balok',prisma:'Prisma segitiga',limas:'Limas segiempat',tabung:'Tabung',kerucut:'Kerucut',bola:'Bola'};
   /* ukuran per tingkat */
   const UKURAN={
-    kubus:{1:[2,3],2:[2,4],3:[3,5]},
+    kubus:{1:[2,4],2:[2,5],3:[3,6]},
     balok:{1:{p:[2,4],l:[1,3],t:[1,3]},2:{p:[3,6],l:[2,4],t:[1,4]},3:{p:[3,7],l:[2,5],t:[2,5]}},
     prisma:{1:{segi:[[4,3,5]],t:[2,5]},2:{segi:[[4,3,5],[8,6,10]],t:[3,8]},3:{segi:[[8,6,10],[12,5,13]],t:[5,10]}},
-    limas:{1:[[6,4,5],[8,3,5]],2:[[6,4,5],[8,3,5],[10,12,13],[16,6,10]],3:[[10,12,13],[16,6,10],[16,15,17],[24,5,13]]},
+    limas:{1:[[6,4,5],[8,3,5],[16,6,10]],2:[[6,4,5],[8,3,5],[10,12,13],[16,6,10]],3:[[10,12,13],[16,6,10],[16,15,17],[24,5,13]]},
     tabung:{1:{r:[7],t:[2,6]},2:{r:[7,14],t:[3,10]},3:{r:[14,21],t:[5,12]}},
-    kerucut:{1:[[7,24,25]],2:[[7,24,25],[21,20,29]],3:[[21,20,29],[21,28,35],[14,48,50]]},
-    bola:{1:[7],2:[7,14],3:[14,21]}};
+    kerucut:{1:[[7,24,25],[21,20,29]],2:[[7,24,25],[21,20,29],[21,28,35],[28,21,35]],3:[[21,28,35],[28,21,35],[14,48,50],[28,45,53],[35,12,37]]},
+    bola:{1:[7,14],2:[7,14,21],3:[14,21,28,35]}};
   /* petunjuk rumus (muncul hanya kalau anak mengetuk tombol petunjuk) */
   const PETUNJUK={
     kubus:{v:'Volume = s × s × s',l:'Luas permukaan = 6 × s × s',tipV:'Hitung permen satu lapis (s × s), lalu kalikan banyak lapisan (s).',tipL:'Kubus punya 6 sisi persegi yang sama besar.'},
@@ -44,7 +44,7 @@ const KadoCore=(()=>{
     const putaran=Math.floor(i/SEMUA.length);return acak(random(seed*31+putaran*104729),SEMUA)[i%SEMUA.length]}
   function ukur(kind,r,lv){const U=UKURAN[kind][lv];
     switch(kind){
-      case'kubus':{const s=ri(r,...U);return{s}}
+      case'kubus':{let s=ri(r,...U);if(s===6)s=7;/* kubus 6 cm: volume = luas permukaan (216), jadi dilewati */return{s}}
       case'balok':{let p=ri(r,...U.p),l=ri(r,...U.l),t=ri(r,...U.t);if(p===l&&l===t)p++;if(l>p)[p,l]=[l,p];return{p,l,t}}
       case'prisma':{const[a,b,c]=pilih(r,U.segi);return{a,b,c,t:ri(r,...U.t)}}
       case'limas':{const[s,t,m]=pilih(r,U);return{s,t,m}}
@@ -73,19 +73,22 @@ const KadoCore=(()=>{
       case'bola':{const{r}=u,lb=PI*r*r,V=4/3*lb*r,L=4*lb;return{V,L,dV:[L,4*lb*r,lb*r,2/3*lb*r,4/3*lb],dL:[V,lb,2*lb,3*lb,4*PI*r],
         rumusV:`Volume = 4/3 × 22/7 × ${r} × ${r} × ${r} = ${angka(V)}`,rumusL:`Luas permukaan = 4 × 22/7 × ${r} × ${r} = 4 × ${angka(lb)} = ${angka(L)}`,
         teks:`jari-jari ${r} cm`,nama:`Bola r ${r} cm`,lebar:2*r,tinggi:2*r}}}}
-  function pesanan(seed,i,level=2,bangun='kotak'){
-    const lv=Math.max(1,Math.min(3,level)),kind=jenis(seed,i,bangun),r=random(seed+i*7919),u=ukur(kind,r,lv),h=hitung(kind,u);
+  /* coba > 0 dipakai saat pesanan yang sama sudah pernah keluar: angka diacak ulang, lalu ukuran tingkat berikutnya ikut dipakai */
+  function pesanan(seed,i,level=2,bangun='kotak',coba=0){
+    const lv=Math.max(1,Math.min(3,level)),kind=bangun==='kotak'&&coba>=24?'balok':jenis(seed,i,bangun),r=random(seed+i*7919+coba*104723),u=ukur(kind,r,Math.min(3,lv+Math.floor(coba/12))),h=hitung(kind,u);
     const[swapV,...dv]=h.dV,[swapL,...dl]=h.dL;
     const isi=pilihan(r,h.V,[swapV,...acak(r,dv)]),bungkus=pilihan(r,h.L,[swapL,...acak(r,dl)]);
     const kotak=KOTAK.includes(kind);
     return{i,kind,u,...(kind==='kubus'?{p:u.s,l:u.s,t:u.s}:kind==='balok'?u:{}),V:bulat(h.V),L:bulat(h.L),opsiV:isi.opsi,benarV:isi.benar,opsiL:bungkus.opsi,benarL:bungkus.benar,sabar:sabar(lv,i,kind),
       rumusV:h.rumusV,rumusL:h.rumusL,nama:h.nama,teks:h.teks,lebar:h.lebar,tinggi:h.tinggi,kotak,satuanIsi:kotak?'permen':'cm³',bulat:['tabung','kerucut','bola'].includes(kind),petunjuk:PETUNJUK[kind],namaBangun:NAMA[kind]}}
-  function player(i,name,character,seed,level,bangun='kotak'){return{i,name,character,seed,level,bangun,urut:0,sempurna:0,okV:0,okL:0,gagal:0,petunjuk:0,riwayat:[],order:pesanan(seed,0,level,bangun),phase:'isi',pilihV:null,pilihL:null}}
+  /* pesanan ke-i yang belum pernah keluar (urutannya sama untuk semua pemain karena memakai benih yang sama) */
+  function pesananUnik(p,i){let o;for(let c=0;c<48;c++){o=pesanan(p.seed,i,p.level,p.bangun,c);if(!p.dilihat.has(o.nama))break}p.dilihat.add(o.nama);return o}
+  function player(i,name,character,seed,level,bangun='kotak'){const p={i,name,character,seed,level,bangun,urut:0,sempurna:0,okV:0,okL:0,gagal:0,petunjuk:0,riwayat:[],dilihat:new Set(),phase:'isi',pilihV:null,pilihL:null};p.order=pesananUnik(p,0);return p}
   /* nilai satu pesanan setelah selesai (atau habis waktu) */
   function nilai(p,habis=false){const o=p.order,v=p.pilihV!==null&&o.opsiV[p.pilihV]===o.V,l=p.pilihL!==null&&o.opsiL[p.pilihL]===o.L,sempurna=v&&l&&!habis;
     if(v)p.okV++;if(l)p.okL++;if(sempurna)p.sempurna++;if(habis)p.gagal++;
     const h={order:o,pilihV:p.pilihV===null?null:o.opsiV[p.pilihV],pilihL:p.pilihL===null?null:o.opsiL[p.pilihL],v,l,sempurna,habis};p.riwayat.push(h);return h}
-  function lanjut(p){p.urut++;p.order=pesanan(p.seed,p.urut,p.level,p.bangun);p.phase='isi';p.pilihV=null;p.pilihL=null}
+  function lanjut(p){p.urut++;p.order=pesananUnik(p,p.urut);p.phase='isi';p.pilihV=null;p.pilihL=null}
   function rank(players){return players.slice().sort((a,b)=>b.sempurna-a.sempurna||(b.okV+b.okL)-(a.okV+a.okL)||a.gagal-b.gagal||a.i-b.i)}
   return{defaults,settings,random,pesanan,player,nilai,lanjut,rank,sabar,angka,PETUNJUK,NAMA,SEMUA,KOTAK};
 })();
