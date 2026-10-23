@@ -27,45 +27,54 @@ const KadoGame=(()=>{
   function backPick(){A.play('tap');if(pick.i>0){pick.i--;pick.sel=settings.characters[pick.i];renderPick()}else show('home')}
   function setup(n){settings.players=n;show('setup');$('modeBadge').textContent=n+' pemain';$('teamFields').innerHTML='';
     for(let i=0;i<n;i++){const row=document.createElement('div');row.className='team-field';row.style.setProperty('--player',colors[i]);row.innerHTML=`<span class="player-number">P${i+1}</span><input maxlength="24" aria-label="Nama kelompok pemain ${i+1}" autocomplete="off"><span class="robot-tag"><i style="background:${ROBOT[settings.characters[i]].warna}"></i>${ROBOT[settings.characters[i]].nama}</span>`;row.querySelector('input').value=settings.names[i];$('teamFields').appendChild(row)}
-    $('sessionMinutes').value=settings.minutes;$('level').value=settings.level;$('volume').value=settings.volume;$('volumeValue').textContent=settings.volume+'%';$('musicEnabled').checked=settings.music;$('fxEnabled').checked=settings.fx;$('motionEnabled').checked=settings.motion}
-  function readSettings(){const teams=[...$('teamFields').children];settings=C.settings({...settings,minutes:$('sessionMinutes').value,level:$('level').value,volume:$('volume').value,music:$('musicEnabled').checked,fx:$('fxEnabled').checked,motion:$('motionEnabled').checked,names:settings.names.map((n,i)=>teams[i]?.querySelector('input').value||n)});save();configureAudio()}
+    $('sessionMinutes').value=settings.minutes;$('level').value=settings.level;$('bangun').value=settings.bangun;$('bangun').dispatchEvent(new Event('change'));$('volume').value=settings.volume;$('volumeValue').textContent=settings.volume+'%';$('musicEnabled').checked=settings.music;$('fxEnabled').checked=settings.fx;$('motionEnabled').checked=settings.motion}
+  function readSettings(){const teams=[...$('teamFields').children];settings=C.settings({...settings,minutes:$('sessionMinutes').value,level:$('level').value,bangun:$('bangun').value,volume:$('volume').value,music:$('musicEnabled').checked,fx:$('fxEnabled').checked,motion:$('motionEnabled').checked,names:settings.names.map((n,i)=>teams[i]?.querySelector('input').value||n)});save();configureAudio()}
 
   /* ---------- arena ---------- */
   function buildPlayer(i,seed){
-    const p=C.player(i,settings.names[i],settings.characters[i],seed,settings.level);p.sisa=p.order.sabar;p.jeda=0;p.sibuk=false;p.tick=-1;
+    const p=C.player(i,settings.names[i],settings.characters[i],seed,settings.level,settings.bangun);p.sisa=p.order.sabar;p.jeda=0;p.sibuk=false;p.tick=-1;
     const el=document.createElement('article');p.el=el;el.className='arena';el.style.setProperty('--player',colors[i]);el.setAttribute('aria-label','Arena '+p.name);
-    el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama} · penjaga toko</small></span></div><div class="tower-score"><b>0</b><small>KOTAK SEMPURNA</small></div></header>
-      <div class="arena-body"><div class="tower-view scene-slot"><div class="pesanan-tag"></div><div class="robot-bubble"></div></div><section class="question-card kado-card" aria-label="Langkah pesanan pemain ${i+1}"></section></div>
-      <footer class="build-footer"><div class="kado-langkah"><i data-l="isi"></i><span>Isi</span><i data-l="bungkus"></i><span>Bungkus</span></div><span class="drag-instruction">Kotak terkirim: <b class="kirim">0</b></span></footer>`;
+    el.innerHTML=`<header class="arena-head"><div class="who"><span class="player-number">P${i+1}</span><span><b>${escape(p.name)}</b><small>${ROBOT[p.character].nama} · penjaga toko</small></span></div><div class="tower-score"><b>0</b><small>KADO SEMPURNA</small></div></header>
+      <div class="arena-body"><div class="tower-view scene-slot"><div class="pesanan-tag"></div><div class="clue-pop" hidden></div><div class="robot-bubble"></div></div><section class="question-card kado-card" aria-label="Langkah pesanan pemain ${i+1}"></section></div>
+      <footer class="build-footer"><div class="kado-langkah"><i data-l="isi"></i><span>Isi</span><i data-l="bungkus"></i><span>Bungkus</span></div><span class="drag-instruction">Kado terkirim: <b class="kirim">0</b></span></footer>`;
     $('arenas').appendChild(el);p.view=S3.create(el.querySelector('.tower-view'),p.character,colors[i]);
     el.querySelector('.kado-card').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||b.disabled||session?.status!=='play')return;
-      if(b.dataset.opsi!==undefined)jawab(p,+b.dataset.opsi);else if(b.dataset.lanjut!==undefined&&p.phase==='hasil')berikut(p)});
+      if(b.dataset.clue!==undefined)petunjuk(p);else if(b.dataset.opsi!==undefined)jawab(p,+b.dataset.opsi);else if(b.dataset.lanjut!==undefined&&p.phase==='hasil')berikut(p)});
     mulaiPesanan(p,true);return p}
-  const UNIT={isi:'permen',bungkus:'cm²'};
   function kartu(p){const o=p.order,card=p.el.querySelector('.kado-card');card.classList.remove('bahas','bad');card.dataset.fase=p.phase;
     const isi=p.phase==='isi',opsi=isi?o.opsiV:o.opsiL;
-    card.innerHTML=`<div class="question-head"><span class="quake-label">${isi?'LANGKAH 1 · ISI = VOLUME':'LANGKAH 2 · BUNGKUS = LUAS PERMUKAAN'}</span><b class="question-timer">${Math.ceil(p.sisa)}</b></div><div class="question-track"><i></i></div>
-      <p class="question-text">${isi?`Berapa <b>permen kubus 1 cm</b> yang pas mengisi penuh kotak <b>${o.p} × ${o.l} × ${o.t} cm</b>?`:`Berapa <b>cm² kertas kado</b> yang pas untuk menutup <b>semua sisi</b> kotak ${o.p} × ${o.l} × ${o.t} cm?`}</p>
-      <div class="question-options">${opsi.map((v,j)=>`<button class="answer-option" data-opsi="${j}"><b>${'ABCD'[j]}</b><span>${v} ${isi?'permen':'cm²'}</span></button>`).join('')}</div>`;
+    const bangun=o.namaBangun.toLowerCase(),pi=o.bulat?' Pakai π = 22/7.':'';
+    const tanya=o.kotak?(isi?`Berapa <b>permen kubus 1 cm</b> yang pas mengisi penuh kotak <b>${o.p} × ${o.l} × ${o.t} cm</b>?`:`Berapa <b>cm² kertas kado</b> yang pas untuk menutup <b>semua sisi</b> kotak ${o.p} × ${o.l} × ${o.t} cm?`)
+      :isi?`Berapa <b>cm³ jeli</b> yang pas mengisi penuh <b>${bangun}</b> ini? <small>(${o.teks})</small>${pi}`:`Berapa <b>cm² kertas kado</b> yang pas menutup <b>seluruh kulit</b> ${bangun} ini? <small>(${o.teks})</small>${pi}`;
+    card.innerHTML=`<div class="question-head"><span class="quake-label">${isi?'LANGKAH 1 · ISI = VOLUME':'LANGKAH 2 · BUNGKUS = LUAS PERMUKAAN'}</span><button type="button" class="clue-btn" data-clue aria-expanded="false"><i>?</i>Petunjuk rumus</button><b class="question-timer">${Math.ceil(p.sisa)}</b></div><div class="question-track"><i></i></div>
+      <p class="question-text">${tanya}</p>
+      <div class="question-options">${opsi.map((v,j)=>`<button class="answer-option" data-opsi="${j}"><b>${'ABCD'[j]}</b><span>${C.angka(v)} ${isi?o.satuanIsi:'cm²'}</span></button>`).join('')}</div>`;
+    tutupPetunjuk(p);
     p.el.querySelectorAll('.kado-langkah i').forEach(e=>{e.classList.toggle('aktif',e.dataset.l===p.phase);e.classList.toggle('done',p.phase==='bungkus'&&e.dataset.l==='isi')})}
+  /* petunjuk rumus: hanya muncul kalau diketuk, supaya anak mencoba mengingat dulu */
+  function petunjuk(p){const pop=p.el.querySelector('.clue-pop'),btn=p.el.querySelector('[data-clue]');if(!pop.hidden)return tutupPetunjuk(p);
+    const o=p.order,isi=p.phase==='isi',t=o.petunjuk;A.play('tap');
+    pop.innerHTML=`<b>Petunjuk · ${o.namaBangun}</b><span class="rumus">${isi?t.v:t.l}</span><small>${isi?t.tipV:t.tipL}</small>${o.bulat?'<small>π = 22/7</small>':''}`;pop.hidden=false;if(btn)btn.setAttribute('aria-expanded','true')}
+  function tutupPetunjuk(p){const pop=p.el.querySelector('.clue-pop');pop.hidden=true;p.el.querySelector('[data-clue]')?.setAttribute('aria-expanded','false')}
   function mulaiPesanan(p,awal=false){p.phase='isi';p.sisa=p.order.sabar;p.tick=-1;p.sibuk=false;S3.pesanan(p.view,p.order);
-    p.el.querySelector('.pesanan-tag').innerHTML=`<small>Pesanan ${p.urut+1}</small>${p.order.nama} cm`;kartu(p);
-    talk(p,awal?'Pelanggan pertama datang! Isi dulu kotaknya dengan permen.':`Pesanan baru: ${p.order.nama}. Ayo cepat!`,'sapa')}
+    p.el.querySelector('.pesanan-tag').innerHTML=`<small>Pesanan ${p.urut+1}</small>${p.order.nama}`;kartu(p);
+    talk(p,awal?`Pelanggan pertama datang! Isi dulu ${p.order.kotak?'kotaknya dengan permen':p.order.namaBangun.toLowerCase()+'nya dengan jeli'}.`:`Pesanan baru: ${p.order.nama}. Ayo cepat!`,'sapa')}
   function jawab(p,j){if(p.sibuk||!['isi','bungkus'].includes(p.phase))return;const o=p.order;p.sibuk=true;
     const card=p.el.querySelector('.kado-card');card.querySelectorAll('[data-opsi]').forEach(b=>{b.disabled=true;b.setAttribute('aria-pressed',+b.dataset.opsi===j)});A.play('tap');
     if(p.phase==='isi'){p.pilihV=j;const n=o.opsiV[j],ok=n===o.V;
       S3.isiPermen(p.view,n,()=>{if(session?.status==='done')return;A.play(ok?'place':'bad');
-        talk(p,ok?`Pas! ${n} permen mengisi penuh kotak. Sekarang bungkus!`:n>o.V?`Waduh, permennya tumpah ${n-o.V}! Volume kotak cuma ${o.V}.`:`Kotaknya belum penuh, kurang ${o.V-n} permen.`,ok?'senang':'bingung');
+        const u=o.satuanIsi,isiNya=o.kotak?'permennya':'jelinya',a=C.angka;
+        talk(p,ok?`Pas! ${a(n)} ${u} mengisi penuh. Sekarang bungkus!`:n>o.V?`Waduh, ${isiNya} tumpah ${a(n-o.V)} ${u}! Volumenya cuma ${a(o.V)}.`:`Belum penuh, kurang ${a(o.V-n)} ${u}.`,ok?'senang':'bingung');
         p.phase='bungkus';p.sibuk=false;kartu(p)})}
     else{p.pilihL=j;const a=o.opsiL[j],ok=a===o.L,sempurna=ok&&o.opsiV[p.pilihV]===o.V;
       S3.bungkus(p.view,a,sempurna,()=>{if(session?.status==='done')return;selesai(p,false)})}}
   function selesai(p,habis){const h=C.nilai(p,habis),o=p.order;p.phase='hasil';p.sibuk=false;p.jeda=6;
     A.play(h.sempurna?'perfect':habis?'quake':'bad');
-    talk(p,h.sempurna?'Kotak sempurna! Pelanggan senang sekali!':habis?'Yaah, pelanggannya pergi karena menunggu terlalu lama.':'Kotaknya belum sempurna. Lihat pembahasannya!',h.sempurna?'senang':'bingung');
+    talk(p,h.sempurna?'Kado sempurna! Pelanggan senang sekali!':habis?'Yaah, pelanggannya pergi karena menunggu terlalu lama.':'Kadonya belum sempurna. Lihat pembahasannya!',h.sempurna?'senang':'bingung');
     p.el.querySelector('.tower-score>b').textContent=p.sempurna;
     const card=p.el.querySelector('.kado-card');card.classList.add('bahas');card.classList.toggle('bad',!h.sempurna);
-    const baris=(ok,judul,isi,pilih,unit)=>`<div class="kunci-baris ${ok?'ok':'no'}"><b>${judul}</b><span>${isi}${pilih===null?' (belum dijawab)':ok?'':` · pilihanmu ${pilih} ${unit}`}</span></div>`;
-    card.innerHTML=`<div class="bahas-hasil"><b>${h.sempurna?'Kotak sempurna!':habis?'Pelanggan pergi':'Kotak belum sempurna'}</b><span>${o.nama} cm</span></div><div class="bahas-kunci">${baris(h.v,'Isi = volume',o.rumusV+' permen',h.pilihV,'permen')}${baris(h.l,'Bungkus = luas',o.rumusL+' cm²',h.pilihL,'cm²')}</div>
+    const baris=(ok,judul,isi,pilih,unit)=>`<div class="kunci-baris ${ok?'ok':'no'}"><b>${judul}</b><span>${isi}${pilih===null?' (belum dijawab)':ok?'':` · pilihanmu ${C.angka(pilih)} ${unit}`}</span></div>`;tutupPetunjuk(p);
+    card.innerHTML=`<div class="bahas-hasil"><b>${h.sempurna?'Kado sempurna!':habis?'Pelanggan pergi':'Kado belum sempurna'}</b><span>${o.nama}</span></div><div class="bahas-kunci">${baris(h.v,'Isi = volume',o.rumusV+' '+(o.kotak?'permen':'cm³'),h.pilihV,o.satuanIsi)}${baris(h.l,'Bungkus = luas',o.rumusL+' cm²',h.pilihL,'cm²')}</div>
       <p class="kado-ingat">Volume menghitung <b>isi</b> (kubus satuan, cm³). Luas permukaan menghitung <b>kulit</b> (persegi satuan, cm²).</p><button class="primary-btn next-block" data-lanjut>Pesanan berikutnya ↗ <span class="hitung">${p.jeda}</span></button>`;
     p.el.querySelector('.kirim').textContent=p.riwayat.length}
   /* kotak yang sudah jadi tetap terlihat selama pembahasan, baru dikirim saat pesanan berikutnya */
@@ -83,10 +92,10 @@ const KadoGame=(()=>{
   function resume(){if(session?.status!=='paused')return;session.status=session.beforePause;$('pause').hidden=true;A.pause(false);A.start()}
   function finish(){if(!session||session.status==='done')return;session.status='done';$('pause').hidden=true;$('countdown').hidden=true;show('results');A.urgent(false);A.pause(false);A.play('finish');
     const ranking=C.rank(session.players);
-    $('resultSubtitle').textContent=`${ranking[0].name} membuat ${ranking[0].sempurna} kotak sempurna!`;
-    podiumViews=[V.podium($('podium'),ranking.map(p=>({character:p.character,color:colors[p.i],name:p.name,meter:p.sempurna+' kotak sempurna'})))];
+    $('resultSubtitle').textContent=`${ranking[0].name} membuat ${ranking[0].sempurna} kado sempurna!`;
+    podiumViews=[V.podium($('podium'),ranking.map(p=>({character:p.character,color:colors[p.i],name:p.name,meter:p.sempurna+' kado sempurna'})))];
     $('podium').setAttribute('aria-label','Panggung juara: '+ranking.map((p,i)=>'juara '+(i+1)+' '+p.name).join(', '));
-    $('resultTable').innerHTML=ranking.map((p,i)=>`<div class="result-row"><b>${i+1}</b><b>${escape(p.name)}</b><span><b>${p.sempurna}</b><small>Kotak sempurna</small></span><span><b>${p.okV}</b><small>Isi tepat (volume)</small></span><span><b>${p.okL}</b><small>Bungkus tepat (luas)</small></span></div>`).join('')}
+    $('resultTable').innerHTML=ranking.map((p,i)=>`<div class="result-row"><b>${i+1}</b><b>${escape(p.name)}</b><span><b>${p.sempurna}</b><small>Kado sempurna</small></span><span><b>${p.okV}</b><small>Isi tepat (volume)</small></span><span><b>${p.okL}</b><small>Bungkus tepat (luas)</small></span></div>`).join('')}
 
   function loop(now){const elapsed=Math.max(0,(now-last)/1000),dt=Math.min(elapsed,.06);last=now;
     if(session?.status!=='paused')sim+=dt;V.frame();

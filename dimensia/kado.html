@@ -20,7 +20,7 @@
   <section id="home" class="screen">
     <div class="logo">
       <h1>Bungkus <span>Kado</span></h1>
-      <p>DIMENSIA · Lomba volume dan luas permukaan</p>
+      <p>DIMENSIA · Lomba volume dan luas permukaan 7 bangun ruang</p>
     </div>
     <div class="hero-world">
       <div id="homeStage" class="scene-slot"></div>
@@ -38,7 +38,7 @@
         <button class="chunky mode" data-players="2"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i></span>2 Pemain</button>
         <button class="chunky mode" data-players="4"><span class="dots"><i style="background:var(--merah)"></i><i style="background:var(--biru)"></i><i style="background:var(--hijau)"></i><i style="background:var(--oranye)"></i></span>4 Pemain</button>
       </div>
-      <div class="rules">Isi permen sebanyak VOLUME · Bungkus kertas seluas LUAS PERMUKAAN · Kotak sempurna terbanyak menang</div>
+      <div class="rules">Isi sebanyak VOLUME · Bungkus seluas LUAS PERMUKAAN · 7 bangun ruang · Kado sempurna terbanyak menang</div>
       <div class="row">
         <button class="small-btn" id="soundHome" aria-pressed="true">Suara nyala</button>
         <button class="small-btn" id="fsBtn">Layar penuh</button>
@@ -80,10 +80,13 @@
             <div class="row-ctl"><div class="chips" data-untuk="sessionMinutes" data-nilai="3,5,10,15" data-satuan="menit"></div>
               <div class="stepper"><button type="button" data-untuk="sessionMinutes" data-langkah="-1" aria-label="Kurangi">−</button><input id="sessionMinutes" type="number" min="1" max="60" step="1" value="5" required aria-label="Lama permainan dalam menit"><span>menit</span><button type="button" data-untuk="sessionMinutes" data-langkah="1" aria-label="Tambah">+</button></div></div>
           </div>
+          <div class="field"><span class="lbl">Bangun ruang</span>
+            <select id="bangun" data-chips aria-label="Bangun ruang yang dipesan"><option value="semua" selected>Semua bangun · kubus, balok, prisma, limas, tabung, kerucut, bola</option><option value="kotak">Kubus &amp; balok saja</option></select>
+          </div>
           <div class="field"><span class="lbl">Tingkat pesanan</span>
             <select id="level" data-chips aria-label="Tingkat pesanan"><option value="1">Penjelajah · kotak kecil, pelanggan sabar</option><option value="2" selected>Penyelidik · kotak sedang</option><option value="3">Ahli Dimensi · kotak besar, pelanggan buru-buru</option></select>
           </div>
-          <p class="hint"><b>Cara main:</b> setiap pesanan punya 2 langkah. <b>1. Isi</b>: pilih banyak permen kubus 1 cm yang pas mengisi kotak (volume, cm³). <b>2. Bungkus</b>: pilih luas kertas kado yang pas menutup semua sisi (luas permukaan, cm²). Permen kebanyakan akan tumpah, kertas kurang membuat kotak bolong. Jawab sebelum pelanggan kehabisan sabar. Pelanggan berikutnya makin terburu-buru.</p>
+          <p class="hint"><b>Cara main:</b> setiap pesanan punya 2 langkah. <b>1. Isi</b>: pilih isi yang pas (volume, cm³): permen kubus 1 cm untuk kubus/balok, jeli untuk bangun lain. <b>2. Bungkus</b>: pilih luas kertas kado yang pas menutup seluruh kulit (luas permukaan, cm²). Isi kebanyakan akan tumpah, kertas kurang membuat kado bolong. Lupa rumus? Ketuk <b>Petunjuk rumus</b>. Jawab sebelum pelanggan kehabisan sabar. Pelanggan berikutnya makin terburu-buru.</p>
         </div>
       </div>
       <div class="setup-actions">
@@ -117,11 +120,11 @@
       <a class="chunky btn" href="index.html">Menu DIMENSIA</a>
       <a class="chunky btn" href="../index.html#3" data-book-return>Kembali ke buku</a>
     </div>
-    <p class="hint">Urutan juara: kotak sempurna, lalu jumlah langkah yang tepat, lalu paling sedikit pelanggan pergi.</p>
+    <p class="hint">Urutan juara: kado sempurna, lalu jumlah langkah yang tepat, lalu paling sedikit pelanggan pergi.</p>
   </section>
 </main>
 
-<div id="countdown" class="countdown-overlay" hidden><span>Toko dibuka!</span><b id="countdownNumber">3</b><p>Isi permen, lalu bungkus kotaknya.</p></div>
+<div id="countdown" class="countdown-overlay" hidden><span>Toko dibuka!</span><b id="countdownNumber">3</b><p>Isi dulu, lalu bungkus kadonya.</p></div>
 
 <div id="pause" class="overlay" hidden>
   <div class="box">

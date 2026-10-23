@@ -95,11 +95,19 @@ test('Lab Bangun Ruang: volume dan luas permukaan semua bangun cocok dengan rumu
 });
 test('Bungkus Kado: pesanan, pilihan, kesabaran, dan nilai kotak sempurna',()=>{
   const K=require('../dimensia/js/kado-core.js');
-  for(let lv=1;lv<=3;lv++)for(let s=1;s<=200;s++)for(let i=0;i<10;i++){const o=K.pesanan(s*17,i,lv);
+  const D=require('../dimensia/js/ruang-data.js');
+  for(let lv=1;lv<=3;lv++)for(let s=1;s<=120;s++){const jenis=new Set();for(let i=0;i<14;i++){const o=K.pesanan(s*17,i,lv,'semua');jenis.add(o.kind);
+    const H=D.hitung(o.kind,o.kind==='kubus'?{s:o.u.s}:o.u),m=o.nama;
+    assert(Math.abs(H.volume.nilai-o.V)<.01,m+' V');assert(Math.abs(H.luas.nilai-o.L)<.01,m+' L');assert.notEqual(o.V,o.L,m);
+    for(const[ops,b,ans]of[[o.opsiV,o.benarV,o.V],[o.opsiL,o.benarL,o.L]]){assert.equal(ops.length,4);assert.equal(new Set(ops).size,4);assert.equal(ops[b],ans);assert(ops.every(x=>x>0))}
+    assert(o.rumusV.endsWith('= '+K.angka(o.V)),o.rumusV);assert(o.rumusL.endsWith('= '+K.angka(o.L)),o.rumusL);assert(o.petunjuk.v&&o.petunjuk.l)}
+    assert.equal(jenis.size,7)}
+  for(let lv=1;lv<=3;lv++)for(let s=1;s<=200;s++)for(let i=0;i<10;i++){const o=K.pesanan(s*17,i,lv,'kotak');assert(['kubus','balok'].includes(o.kind));
     assert.equal(o.V,o.p*o.l*o.t);assert.equal(o.L,2*(o.p*o.l+o.p*o.t+o.l*o.t));if(o.kind==='kubus')assert(o.p===o.l&&o.l===o.t);
     for(const[ops,b,ans]of[[o.opsiV,o.benarV,o.V],[o.opsiL,o.benarL,o.L]]){assert.equal(ops.length,4);assert.equal(new Set(ops).size,4);assert.equal(ops[b],ans);assert(ops.every(x=>Number.isInteger(x)&&x>0))}
-    assert(o.rumusV.endsWith('= '+o.V));assert(o.rumusL.endsWith('= '+o.L))}
-  for(let lv=1;lv<=3;lv++)for(let i=1;i<30;i++)assert(K.sabar(lv,i)<=K.sabar(lv,i-1)&&K.sabar(lv,i)>=10);
+    assert(o.rumusV.endsWith('= '+K.angka(o.V)));assert(o.rumusL.endsWith('= '+K.angka(o.L)))}
+  for(let lv=1;lv<=3;lv++)for(let i=1;i<30;i++)assert(K.sabar(lv,i)<=K.sabar(lv,i-1)&&K.sabar(lv,i)>=10&&K.sabar(lv,i,'bola')>K.sabar(lv,i));
+  assert.equal(K.settings({bangun:'kotak'}).bangun,'kotak');assert.equal(K.settings({}).bangun,'semua');
   const p=K.player(0,'Tim',0,9,2);p.pilihV=p.order.benarV;p.pilihL=p.order.benarL;assert.equal(K.nilai(p).sempurna,true);K.lanjut(p);
   p.pilihV=p.order.benarV;p.pilihL=(p.order.benarL+1)%4;const h=K.nilai(p);assert.equal(h.sempurna,false);assert.equal(h.v,true);assert.equal(h.l,false);K.lanjut(p);
   K.nilai(p,true);assert.deepEqual([p.sempurna,p.okV,p.okL,p.gagal],[1,2,1,1]);
