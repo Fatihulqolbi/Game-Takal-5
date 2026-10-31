@@ -95,6 +95,9 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
 .bab.ungu{background:#7a4be0}
 .bab.hijau{background:#1f9d55}
 .note h2.logo.ukr span{color:#1f9d55}
+.bab.biru{background:#2f7bea}
+.note h2.logo.dat span{color:#2f7bea}
+.datag{background:repeating-linear-gradient(0deg,transparent 0 1.4em,rgba(30,42,74,.12) 1.4em 1.5em) 0 0/100% 42% no-repeat,linear-gradient(#cfeeff 0 42%,#ffd9ec 42% 100%)}
 .tags{display:flex;flex-wrap:wrap;gap:.3em}
 .tags i{font-style:normal;font-size:.52em;font-weight:800;border:.14em solid var(--ink);border-radius:99px;padding:.1em .7em;background:var(--paper)}
 .pbtn{font-weight:800;border:.17em solid var(--ink);border-radius:.7em;box-shadow:0 .28em 0 var(--ink);background:var(--paper);font-size:.62em;padding:.2em .8em;text-align:left;display:flex;align-items:center;gap:.5em}
@@ -240,6 +243,28 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
     <path d="M50 30v4M50 74v4M26 54h4M70 54h4" fill="none" stroke-width="2.4"/><path d="M50 54V40M50 54l10 6" fill="none" stroke-width="3"/><path d="M50 54l-12 8" fill="none" stroke="#e8323c" stroke-width="2.4"/>
     <circle cx="42" cy="46" r="3" fill="#252A59" stroke="none"/><circle cx="58" cy="46" r="3" fill="#252A59" stroke="none"/>
   </symbol>
+  <symbol id="bato" viewBox="0 0 100 110">
+    <ellipse cx="36" cy="102" rx="9" ry="5" fill="#ffc93c"/><ellipse cx="64" cy="102" rx="9" ry="5" fill="#ffc93c"/><path d="M36 92v8M64 92v8" fill="none" stroke-width="5"/>
+    <rect x="14" y="44" width="24" height="48" fill="#ff6b6b"/><rect x="38" y="12" width="24" height="80" fill="#ffd54f"/><rect x="62" y="30" width="24" height="62" fill="#4fc3f7"/><rect x="8" y="90" width="84" height="6" fill="#1e2a4a"/>
+    <circle cx="45" cy="28" r="4.5" fill="#fff" stroke-width="2"/><circle cx="55" cy="28" r="4.5" fill="#fff" stroke-width="2"/><circle cx="45.5" cy="29" r="2.2" fill="#252A59" stroke="none"/><circle cx="55.5" cy="29" r="2.2" fill="#252A59" stroke="none"/><path d="M46 38q4 4 8 0" fill="none" stroke-width="2.4"/>
+  </symbol>
+  <symbol id="piko" viewBox="0 0 100 110">
+    <ellipse cx="36" cy="102" rx="9" ry="5" fill="#252A59"/><ellipse cx="64" cy="102" rx="9" ry="5" fill="#252A59"/><path d="M36 84v14M64 84v14" fill="none" stroke-width="5"/>
+    <rect x="16" y="20" width="68" height="66" rx="12" fill="#FF8CC6"/><circle cx="50" cy="54" r="24" fill="#fff"/>
+    <circle cx="42" cy="50" r="3.2" fill="#252A59" stroke="none"/><circle cx="58" cy="50" r="3.2" fill="#252A59" stroke="none"/><path d="M43 61q7 6 14 0" fill="none" stroke-width="2.6"/>
+    <rect x="62" y="8" width="32" height="20" rx="10" fill="#ffc93c"/><text x="78" y="23" text-anchor="middle" font-family="Baloo 2,Trebuchet MS,sans-serif" font-weight="800" font-size="13" fill="#1e2a4a" stroke="none">×4</text>
+  </symbol>
+  <symbol id="tabi" viewBox="0 0 100 110">
+    <ellipse cx="36" cy="102" rx="9" ry="5" fill="#e8323c"/><ellipse cx="64" cy="102" rx="9" ry="5" fill="#e8323c"/><path d="M36 90v8M64 90v8" fill="none" stroke-width="5"/>
+    <rect x="18" y="10" width="64" height="82" rx="6" fill="#fffdf6"/><rect x="18" y="10" width="64" height="20" fill="#3CC8B4"/><rect x="38" y="4" width="24" height="10" rx="3" fill="#9aa6b8"/>
+    <rect x="20" y="48" width="60" height="12" fill="#ffe08a" stroke="none"/><path d="M18 46h64M18 62h64M18 78h64M48 30v62" fill="none" stroke-width="2.4"/>
+    <circle cx="42" cy="20" r="3" fill="#fff" stroke="none"/><circle cx="58" cy="20" r="3" fill="#fff" stroke="none"/>
+  </symbol>
+  <symbol id="turi" viewBox="0 0 100 110">
+    <ellipse cx="38" cy="102" rx="9" ry="5" fill="#252A59"/><ellipse cx="62" cy="102" rx="9" ry="5" fill="#252A59"/>
+    <path d="M32 40v58M44 40v58M56 40v58M68 40v58" fill="none" stroke="#9B7BFF" stroke-width="8" stroke-linecap="round"/><path d="M22 88L78 50" fill="none" stroke="#e8323c" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="50" cy="24" r="20" fill="#9B7BFF"/><circle cx="43" cy="22" r="3.2" fill="#fff" stroke="none"/><circle cx="57" cy="22" r="3.2" fill="#fff" stroke="none"/><path d="M44 31q6 5 12 0" fill="none" stroke-width="2.4"/>
+  </symbol>
   </g>
 </svg>
 
@@ -280,6 +305,7 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
           <button class="pbtn" data-go="2"><b>1</b><span>Laskar Pecahan</span><small>Pecahan</small></button>
           <button class="pbtn" data-go="3"><b>2</b><span>Dimensia</span><small>Geometri</small></button>
           <button class="pbtn" data-go="4"><b>3</b><span>Pengukuran</span><small>Satuan ukur</small></button>
+          <button class="pbtn" data-go="5"><b>4</b><span>Penyajian Data</span><small>Diagram &amp; tabel</small></button>
         </div><span class="no">2</span></div>
         <div class="pc" style="left:1em;bottom:10.4em;width:3.2em;--a:-84deg;--d:.16s"><svg viewBox="0 0 60 160"><use href="#tiang"/></svg></div>
         <div class="pc" style="left:12.6em;bottom:12.8em;width:5.4em;--a:-86deg;--d:.08s"><svg viewBox="0 0 120 60"><use href="#awan"/></svg></div>
@@ -352,16 +378,41 @@ button:focus-visible{outline:4px solid var(--sun);outline-offset:3px}
       <i class="edge e-out"></i><i class="edge e-in"></i><i class="edge e-top"></i><i class="edge e-bot"></i>
     </div>
 
-    <!-- LEMBAR 4: Bab 3 kanan (tombol Main) | sampul belakang -->
-    <div class="leaf hard">
+    <!-- LEMBAR 4: Bab 3 kanan (tombol Main) | Bab 4 kiri -->
+    <div class="leaf">
       <div class="face f" data-s="4"><div class="art ukur">
         <div class="note center">
           <button class="pbtn play" data-play="pengukuran/index.html" aria-label="Mulai Pengukuran">Main ▸</button>
-          <button class="pbtn" data-go="0">Tutup buku</button>
+          <p>Game muncul dari halaman ini.</p>
         </div><span class="no">8</span></div>
         <div class="pc" style="left:1.4em;bottom:9.2em;width:4.4em;--a:-78deg;--d:.26s"><svg viewBox="0 0 100 110"><use href="#grama"/></svg></div>
         <div class="pc" style="left:7.8em;bottom:12em;width:4em;--a:-86deg;--d:.08s"><svg viewBox="0 0 60 60"><use href="#bintang"/></svg></div>
         <div class="pc" style="left:14em;bottom:9.2em;width:4.4em;--a:-80deg;--d:.36s"><svg viewBox="0 0 100 110"><use href="#tiko"/></svg></div>
+      </div>
+      <div class="face b" data-s="5"><div class="art datag">
+        <div class="note">
+          <span class="bab biru">BAB 4</span>
+          <h2 class="logo dat">Penyajian <span>Data</span></h2>
+          <p>Bongkar diagram batang, piktogram, tabel, turus, diagram lingkaran, dan diagram garis bersama Bato, Piko, Tabi, dan Turi! Potong selisihnya, tumpuk jumlahnya, buat pizza diagram lingkaran, lalu adu cepat jadi detektif data dan koki data.</p>
+          <div class="tags"><i>Data SD</i><i>1, 2, atau 4 pemain</i></div>
+        </div><span class="no">9</span></div>
+        <div class="pc" style="left:1em;bottom:9.2em;width:4.4em;--a:-78deg;--d:.18s"><svg viewBox="0 0 100 110"><use href="#bato"/></svg></div>
+        <div class="pc" style="left:7.4em;bottom:12.2em;width:5em;--a:-86deg;--d:.06s"><svg viewBox="0 0 120 60"><use href="#awan"/></svg></div>
+        <div class="pc" style="left:14.2em;bottom:9.2em;width:4.4em;--a:-80deg;--d:.3s"><svg viewBox="0 0 100 110"><use href="#piko"/></svg></div>
+      </div>
+      <i class="edge e-out"></i><i class="edge e-in"></i><i class="edge e-top"></i><i class="edge e-bot"></i>
+    </div>
+
+    <!-- LEMBAR 5: Bab 4 kanan (tombol Main) | sampul belakang -->
+    <div class="leaf hard">
+      <div class="face f" data-s="5"><div class="art datag">
+        <div class="note center">
+          <button class="pbtn play" data-play="data/index.html" aria-label="Mulai Penyajian Data">Main ▸</button>
+          <button class="pbtn" data-go="0">Tutup buku</button>
+        </div><span class="no">10</span></div>
+        <div class="pc" style="left:1.4em;bottom:9.2em;width:4.4em;--a:-78deg;--d:.26s"><svg viewBox="0 0 100 110"><use href="#tabi"/></svg></div>
+        <div class="pc" style="left:7.8em;bottom:12em;width:4em;--a:-86deg;--d:.08s"><svg viewBox="0 0 60 60"><use href="#bintang"/></svg></div>
+        <div class="pc" style="left:14em;bottom:9.2em;width:4.4em;--a:-80deg;--d:.36s"><svg viewBox="0 0 100 110"><use href="#turi"/></svg></div>
       </div>
       <div class="face b"><div class="art backcover"></div></div>
       <i class="edge e-out"></i><i class="edge e-in"></i><i class="edge e-top"></i><i class="edge e-bot"></i>
@@ -405,7 +456,7 @@ document.getElementById('syms').insertAdjacentHTML('beforeend',kubusIso());
 
 /* Alur buku: cur = jumlah lembar yang sudah dibalik (0 = tertutup, 1..3 = nomor bentangan) */
 const $=id=>document.getElementById(id);
-const NAMA=['Sampul','Awal Perjalanan','Bab 1: Laskar Pecahan','Bab 2: Dimensia','Bab 3: Pengukuran'];
+const NAMA=['Sampul','Awal Perjalanan','Bab 1: Laskar Pecahan','Bab 2: Dimensia','Bab 3: Pengukuran','Bab 4: Penyajian Data'];
 const T=.5, book=$('book'), leaves=[...document.querySelectorAll('.leaf')], faces=[...document.querySelectorAll('.face')];
 const N=leaves.length, MAX=N-1;
 let cur=0, tok=0;
@@ -463,7 +514,7 @@ document.querySelectorAll('[data-play]').forEach(b=>b.addEventListener('click',(
 }));
 addEventListener('pageshow',()=>{book.classList.remove('zoom');$('fade').classList.remove('show')});
 
-/* Mulai: buka langsung di bentangan dari alamat (#1..#4), misalnya saat kembali dari game */
+/* Mulai: buka langsung di bentangan dari alamat (#1..#5), misalnya saat kembali dari game */
 cur=Math.max(0,Math.min(MAX,parseInt(location.hash.slice(1))||0));
 leaves.forEach(l=>l.style.transition='none'); layout(cur); void book.offsetWidth; leaves.forEach(l=>l.style.transition='');
 setTimeout(pop,250);

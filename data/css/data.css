@@ -1,0 +1,248 @@
+/* PENYAJIAN DATA: tambahan kecil di atas tema Laskar Pecahan + arena Kota Langit + kartu Bungkus Kado + Lab Pengukuran */
+.datab .bato-dot{background:#FF6B6B}.datab .piko-dot{background:#FF8CC6}.datab .tabi-dot{background:#3CC8B4}.datab .turi-dot{background:#9B7BFF}
+.datab .robot-picks i{display:inline-block;width:.8em;height:.8em;border-radius:50%;border:2px solid var(--ink);margin-right:.35em;vertical-align:-.05em}
+.datab svg text{user-select:none;-webkit-user-select:none}
+
+/* ---------- menu ---------- */
+.hub-menu.empat{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1100px){.hub-menu.empat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.hub-menu.empat{grid-template-columns:minmax(0,1fr)}}
+.mode-game{justify-content:center}
+.mode-game .chip[aria-pressed="true"]{background:var(--sun);transform:translateY(2px);box-shadow:0 2px 0 var(--ink)}
+
+/* ---------- papan animasi (pembahasan & Lab) ---------- */
+.da{display:flex;flex-direction:column;gap:6px;min-width:0;min-height:0}
+.da-papan{min-height:0;display:flex;justify-content:center}
+.da-svg{display:block;width:100%;height:auto;max-height:100%;border:3px solid var(--ink);border-radius:16px;background:#fff}
+.da-svg .da-bar{transition:opacity .25s}
+.da-cap{margin:0;min-height:2.7em;display:flex;align-items:center;background:var(--cream);border:3px dashed var(--ink);border-radius:14px;padding:.25em .7em;font-weight:800;line-height:1.3;font-size:clamp(13px,2.5cqw,22px)}
+@keyframes dapop{from{opacity:.35;transform:scale(.97)}to{opacity:1;transform:none}}
+@keyframes daketuk{40%{transform:scale(1.08)}}
+.da-cap.pop{animation:dapop .3s ease-out}
+.da-cap[data-hasil="benar"]{background:#e7f8df;border-style:solid;border-color:var(--hijau)}
+.da-cap[data-hasil="salah"]{background:#ffe1e3;border-style:solid;border-color:var(--merah)}
+.da-ulang{align-self:flex-start;font-family:var(--display);font-weight:800;font-size:clamp(13px,2cqw,18px);padding:.15em .8em;border:3px solid var(--ink);border-radius:99px;background:var(--paper);box-shadow:0 3px 0 var(--ink);color:var(--ink)}
+.da-ulang[hidden]{display:none}
+/* editor: batang yang diseret */
+.da-editor{cursor:ns-resize;touch-action:none}
+.da-editor .da-gagang{pointer-events:none}
+.da-editor .da-bar.dipegang rect:first-child{stroke-width:6}
+.da-editor.terkunci{cursor:default}.da-editor.terkunci .da-gagang{display:none}
+.da-bar.salah rect:first-child{stroke:var(--merah);stroke-width:7;animation:shake .4s}
+.da-bar.benar rect:first-child{stroke:var(--hijau);stroke-width:7}
+.da-bar:focus{outline:none}.da-bar:focus-visible rect:first-child{stroke:var(--biru);stroke-width:7}
+
+/* ---------- kartu soal lomba ---------- */
+.datab .data-card{gap:clamp(4px,1cqw,10px)}
+.datab .data-soal{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(6px,1.4cqw,16px);align-items:start;min-height:0}
+.datab .data-gambar svg{display:block;width:100%;height:auto;max-height:52vh;border:3px solid var(--ink);border-radius:14px}
+.datab .data-kanan{display:flex;flex-direction:column;gap:clamp(6px,1.2cqw,12px);min-width:0}
+.datab .data-card .question-text{flex:none;font-size:clamp(14px,2.7cqw,28px);line-height:1.3}
+.datab .data-card .question-options{grid-template-columns:1fr 1fr;padding-bottom:4px}
+.datab .data-card .question-options.opsi-panjang{grid-template-columns:1fr}
+.datab .data-card .answer-option{font-size:clamp(13px,2.5cqw,24px);min-height:clamp(40px,6.5cqw,70px);line-height:1.2}
+.datab .data-card .opsi-gambar .answer-option{align-items:flex-start;padding:.2em .3em}
+.datab .data-card .opsi-gambar .answer-option svg{max-height:clamp(70px,13cqw,160px)}
+.datab .data-card .statement{font-size:clamp(13px,2.5cqw,22px);gap:6px;line-height:1.25}
+.datab .data-card .statement button{min-height:clamp(36px,6cqw,60px);padding:.15em .55em}
+.datab .data-card .submit-answer{font-size:clamp(15px,2.8cqw,26px)}
+.datab .data-editor{min-width:0}
+.datab .data-editor .da-svg{max-height:46vh;touch-action:none}
+.datab .tabel-kecil svg{max-height:40vh}
+/* pembahasan: animasi di kiri, kunci di kanan */
+.datab .data-bahas{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(6px,1.4cqw,16px);align-items:start;min-height:0}
+.datab .data-anim .da-svg{max-height:46vh}
+.datab .data-bahas .bahas-kunci{display:flex;flex-direction:column;gap:6px}
+.datab .langkah-data{margin:4px 0 0;padding-left:1.3em;display:flex;flex-direction:column;gap:3px;font-size:clamp(12px,2cqw,19px);line-height:1.3;font-weight:700}
+.datab .data-card.bahas .kado-ingat{font-size:clamp(12px,2cqw,18px)}
+@container (max-width:430px){
+  .datab .data-soal,.datab .data-bahas{grid-template-columns:minmax(0,1fr)}
+  .datab .data-card .question-options{grid-template-columns:1fr 1fr}
+}
+/* tata letak arena: kartu soal jauh lebih besar karena diagramnya harus terbaca */
+.datab .mode-1 .question-card{width:70%}
+.datab .mode-2 .arena-body{flex-direction:column}
+.datab .mode-2 .tower-view{flex:0 0 24%;min-height:90px}
+.datab .mode-2 .question-card{flex:1;max-height:none;min-height:0}
+.datab .mode-4 .question-card{width:80%}
+.datab .data-soal.tipe-kategori,.datab .data-soal.tipe-multi{grid-template-columns:minmax(0,.85fr) minmax(0,1.25fr)}
+.datab .mode-1 .question-card.bahas{width:70%}
+.datab .mode-4 .question-card.bahas{width:auto}
+.datab .mode-4 .data-anim .da-svg{max-height:14vh}
+.datab .mode-4 .da-cap{font-size:clamp(12px,1.9cqw,17px)}
+.datab .mode-2 .data-gambar svg,.datab .mode-2 .data-anim .da-svg,.datab .mode-2 .data-editor .da-svg{max-height:40vh}
+.datab .mode-4 .data-gambar svg,.datab .mode-4 .data-editor .da-svg{max-height:27vh}
+.datab .mode-4 .tabel-kecil svg{max-height:22vh}
+.datab .mode-4 .langkah-data{font-size:clamp(11px,1.7cqw,15px);gap:1px}
+.datab .mode-4 .da-cap{min-height:2.2em}
+.datab .clue-pop .rumus{font-size:clamp(14px,2.4cqw,22px)}
+.datab .review-item svg{display:block;max-width:420px;max-height:260px;margin:6px 0}
+.datab .review-item .opsi-cetak{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-width:640px}
+.datab .review-item .opsi-cetak figure{margin:0}.datab .review-item .opsi-cetak svg{max-width:100%}
+
+/* ---------- LAB ---------- */
+.datab.lab .lab-tab .chip{font-size:clamp(13px,1.25vw,19px)}
+.data-panggung{background:#fffdf6;overflow:hidden}
+.data-isi{position:absolute;inset:0;padding:clamp(86px,11vh,104px) 14px 58px;display:flex;flex-direction:column;min-height:0}
+.data-isi>div{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.data-isi .da-svg,.data-isi>div>svg{max-height:100%}
+.data-ucap{display:flex;align-items:center;gap:.4em;max-width:calc(100% - 24px)}
+.data-ucap i{flex:none;width:.9em;height:.9em;border-radius:50%;border:2px solid var(--ink)}
+.data-panggung .pesanan-tag[hidden]{display:none}
+.lab .soal-opsi.panjang{grid-template-columns:minmax(0,1fr)}
+.lab .soal-opsi.opsi-gambar .answer-option svg{max-height:120px;width:100%}
+.lab .soal-box .statement{font-size:clamp(13px,1.2vw,18px)}
+.lab .soal-box .statement button{min-height:40px}
+.lab .submit-answer{font-size:clamp(16px,1.5vw,22px)}
+.jenis-soal{font-weight:900;color:#5b6b85;text-transform:uppercase;letter-spacing:.04em;font-size:clamp(11px,.9vw,13px)}
+.lab-gambar svg{display:block;width:100%;height:auto;max-height:260px;border:3px solid var(--ink);border-radius:12px}
+.lab-hasil{display:flex;flex-direction:column;gap:8px;border:3px solid var(--ink);border-radius:14px;padding:.5em .7em;font-size:clamp(14px,1.25vw,18px)}
+.lab-hasil[hidden]{display:none}
+.lab-hasil.ok{background:#e7f8df}.lab-hasil.no{background:#ffe1e3}
+.lab-hasil .data-anim{background:var(--paper);border-radius:12px;padding:6px}
+.lab-hasil .da-cap{font-size:clamp(13px,1.15vw,17px)}
+.lab-hasil .langkah-data{margin:0;padding-left:1.3em;font-size:clamp(13px,1.1vw,16px)}
+
+/* 1. rapikan */
+.rapi{position:relative;flex:1;min-height:0;--s:48px}
+.rapi .kol-n{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--display);font-weight:800;font-size:clamp(18px,2vw,30px);background:var(--paper);border:3px solid var(--ink);border-radius:99px;padding:0 .5em;line-height:1.3}
+.rapi .kol-n[hidden]{display:none}
+.rapi-kolom{position:absolute;inset:45% 0 0 0;display:flex;pointer-events:none}
+.rapi-kolom .kol{position:relative;flex:1;border-left:3px dashed #c9d6e8;display:flex;align-items:flex-end;justify-content:center;padding-bottom:6px}
+.rapi-kolom .kol:first-child{border-left:0}
+.rapi-kolom .kol b{font-size:clamp(13px,1.3vw,19px);background:var(--paper);border:3px solid var(--ink);border-radius:12px;padding:.05em .5em;white-space:nowrap}
+.rapi .benda{position:absolute;left:0;top:0;width:var(--s);height:var(--s);display:grid;place-items:center;font-size:calc(var(--s)*.78);line-height:1;cursor:grab;touch-action:none;transition:transform .7s cubic-bezier(.3,1.3,.5,1),background .5s,border-radius .5s;z-index:2;border-radius:30%}
+.rapi .benda.dipegang{transition:none;cursor:grabbing;z-index:5;filter:drop-shadow(0 6px 0 rgba(30,42,74,.35))}
+.rapi[data-fase="diagram"] .benda{background:var(--w);border:2px solid var(--ink);border-radius:2px;font-size:0;cursor:default}
+.rapi-sumbu{position:absolute;inset:0;pointer-events:none}
+.rapi-sumbu i{position:absolute;left:0;right:0;border-top:2px dashed #c9d6e8}
+.rapi-sumbu i:first-child{border-top:3px solid var(--ink)}
+.rapi-sumbu span{position:absolute;left:4px;top:-.75em;font-weight:900;font-size:clamp(12px,1.1vw,16px);background:#fffdf6;padding:0 .2em}
+/* 2. turus */
+.turus-lab{gap:10px}
+.turus-kartu{align-self:center;display:flex;flex-direction:column;align-items:center;background:var(--paper);border:4px solid var(--ink);border-radius:20px;box-shadow:0 6px 0 var(--ink);padding:.3em 1.2em;text-align:center}
+.turus-kartu small{font-weight:800;color:#5b6b85;font-size:clamp(12px,1vw,15px)}
+.turus-kartu b{font-family:var(--display);font-size:clamp(20px,2.3vw,36px);line-height:1.15}
+.turus-kartu b span{color:#c2185b;white-space:nowrap}
+.turus-kartu.goyang{animation:shake .4s}
+.tiga{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);grid-template-rows:auto auto;gap:10px;align-items:start}
+.tiga figure:nth-child(3){grid-column:2;grid-row:1/3}
+.tiga.dua{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto}
+.turus-ikon{height:1.2em;width:auto;vertical-align:-.25em}
+.tiga figure{margin:0;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tiga figcaption{font-family:var(--display);font-weight:800;text-align:center;font-size:clamp(14px,1.3vw,20px)}
+.tiga svg{display:block;width:100%;height:auto;max-height:52vh;border:3px solid var(--ink);border-radius:12px}
+.pilih-jenis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:.4em 0}
+.jenis-btn{display:flex;align-items:center;gap:.4em;padding:.25em .6em;font-family:var(--display);font-weight:800;font-size:clamp(18px,1.7vw,26px);color:var(--ink);background:color-mix(in srgb,var(--w) 35%,#fff)}
+.jenis-btn span{font-size:1.35em}
+.jenis-btn:active{transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
+/* 3-5. papan piktogram, garis, potong */
+.pikto-lab .da-ikon{cursor:pointer}
+.garis-lab .da-svg,.potong-lab .da-svg{touch-action:none}
+.garis-lab .da-bar,.potong-lab .bisa-pilih{cursor:pointer}
+.potong-lab .da-bar.dipilih rect:first-child{stroke:var(--biru);stroke-width:7}
+.op-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:.4em 0}
+.op-btn{display:flex;flex-direction:column;align-items:flex-start;gap:.1em;padding:.3em .6em;text-align:left;color:var(--ink)}
+.op-btn b{font-family:var(--display);font-size:clamp(16px,1.5vw,23px)}
+.op-btn small{font-size:clamp(12px,1vw,15px);font-weight:700}
+.op-btn:disabled{opacity:.45}
+.op-btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
+/* 6. ubah sajian */
+.sajian-lab{display:grid!important;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;align-items:center}
+.sajian-editor,.sajian-lain{min-width:0;min-height:0;display:flex;flex-direction:column;gap:8px}
+.sajian-editor .da-svg{max-height:60vh}
+.sajian-gambar svg{display:block;width:100%;height:auto;max-height:52vh;border:3px solid var(--ink);border-radius:12px}
+.ubah-tabel{display:flex;flex-direction:column;gap:6px;margin:.4em 0}
+.ubah-tabel .ubah-baris{display:grid;grid-template-columns:minmax(0,1fr) auto 3ch auto;align-items:center;gap:8px;margin:0;font-weight:800;font-size:clamp(15px,1.3vw,20px)}
+.ubah-tabel b{text-align:center;font-family:var(--display);font-size:1.25em}
+.ubah-tabel .small-btn{min-width:2.4em}
+/* 7. survei */
+.survei-lab{gap:10px}
+.survei-tombol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;flex:none!important}
+.survei-btn{position:relative;display:flex;flex-direction:column;align-items:center;gap:.1em;padding:.4em .3em;color:var(--ink);background:color-mix(in srgb,var(--w) 35%,#fff);touch-action:none;user-select:none}
+.survei-btn span{font-size:clamp(34px,4.4vw,72px);line-height:1}
+.survei-btn b{font-family:var(--display);font-size:clamp(15px,1.5vw,24px)}
+.survei-btn i{position:absolute;right:-.4em;top:-.5em;font-style:normal;font-family:var(--display);font-weight:800;font-size:clamp(16px,1.6vw,26px);background:var(--sun);border:3px solid var(--ink);border-radius:99px;min-width:1.8em;text-align:center}
+.survei-btn.pop{animation:daketuk .3s ease-out}
+.survei-btn:active{transform:translateY(4px);box-shadow:0 3px 0 var(--ink)}
+.survei-hasil{flex:1;min-height:0;display:grid!important;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:10px;align-items:start}
+.survei-hasil svg{display:block;width:100%;height:auto;max-height:48vh;border:3px solid var(--ink);border-radius:12px}
+#buatSoal{align-self:flex-start;margin-top:8px}
+@media (max-width:900px){
+  .data-isi{position:relative;min-height:56vh}
+  .tiga,.survei-hasil,.sajian-lab{grid-template-columns:minmax(0,1fr)}
+  .survei-tombol{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:reduce){.rapi .benda{transition-duration:.01s}.da-cap.pop,.survei-btn.pop{animation:none}}
+
+/* ---------- diagram garis yang bisa diseret (Lab) ---------- */
+.da-garis .da-bar>rect:first-child{fill-opacity:0;stroke-opacity:0;transition:fill-opacity .3s,stroke-opacity .3s}
+.da-garis.lihat-batang .da-bar>rect:first-child{fill-opacity:.4;stroke-opacity:.55}
+.da-garis .da-bar.dipegang circle{stroke:var(--biru);stroke-width:6}
+.da-garis .da-bar.salah circle{stroke:var(--merah);stroke-width:6}.da-garis .da-bar.benar circle{stroke:var(--hijau);stroke-width:6}
+
+/* ---------- pizza ---------- */
+.da-pizza{cursor:pointer;touch-action:none}
+.da-pizza .da-iris{transition:fill .15s}
+.da-pizza.terkunci{cursor:default}
+
+/* ---------- Koki Data ---------- */
+.datab .data-card.koki{gap:clamp(4px,1cqw,10px)}
+.koki-isi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(6px,1.4cqw,16px);align-items:start;min-height:0}
+.koki-kanan,.koki-kiri{display:flex;flex-direction:column;gap:clamp(5px,1cqw,10px);min-width:0}
+.koki-tiket{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(44px,8cqw,78px),1fr));gap:clamp(3px,.8cqw,8px);align-content:start}
+.tiket{position:relative;display:flex;flex-direction:column;align-items:center;padding:.15em 0;border:2.5px solid var(--ink);border-radius:8px;background:#fffdf6;box-shadow:0 3px 0 var(--ink);color:var(--ink);font:inherit;cursor:pointer;touch-action:manipulation;
+  background-image:repeating-linear-gradient(0deg,transparent 0 9px,rgba(30,42,74,.07) 9px 10px)}
+.tiket span{font-size:clamp(18px,3.6cqw,34px);line-height:1.1}
+.tiket small{font-weight:800;font-size:clamp(9px,1.5cqw,13px);line-height:1.1}
+.tiket[aria-pressed="true"]{opacity:.42;transform:translateY(3px);box-shadow:none}
+.tiket[aria-pressed="true"]::after{content:"";position:absolute;left:8%;right:8%;top:50%;height:3px;background:var(--merah);transform:rotate(-24deg)}
+.koki-tabel{display:flex;flex-direction:column;gap:clamp(3px,.7cqw,7px)}
+.koki-baris{display:grid;grid-template-columns:minmax(0,1fr) auto 3ch auto;align-items:center;gap:clamp(4px,.8cqw,8px);padding:.15em .4em;border:2.5px solid var(--ink);border-radius:10px;background:var(--paper);font-weight:800;font-size:clamp(13px,2.3cqw,21px)}
+.koki-baris b{text-align:center;font-family:var(--display);font-size:1.25em}
+.koki-baris .small-btn{min-width:2.3em;min-height:clamp(32px,5.5cqw,52px);font-size:1.1em;padding:0}
+.koki-baris.salah{background:#ffe1e3;border-color:var(--merah);animation:shake .4s}
+.koki-baris.benar{background:#e7f8df;border-color:var(--hijau)}
+.koki-tabel.baca .koki-baris{grid-template-columns:minmax(0,1fr) 3ch}
+.koki-tabel.baca .koki-baris.jumlah{background:var(--cream);border-style:dashed}
+.koki-pizza .da-svg,.koki-kiri .data-editor .da-svg{max-height:50vh;margin:0 auto}
+.koki-palet{display:flex;flex-direction:column;gap:clamp(3px,.7cqw,7px)}
+.koki-topping{display:flex;align-items:center;gap:.3em;padding:.2em .45em;border:3px solid var(--ink);border-radius:12px;background:color-mix(in srgb,var(--w) 30%,#fff);box-shadow:0 3px 0 var(--ink);color:var(--ink);font-family:var(--display);font-weight:800;font-size:clamp(13px,2.3cqw,21px);cursor:pointer;min-height:clamp(36px,6cqw,58px);touch-action:manipulation}
+.koki-topping span{font-size:1.3em}
+.koki-palet .koki-baris.jumlah{background:var(--cream);border-style:dashed;grid-template-columns:minmax(0,1fr) auto}
+.koki-topping i{margin-left:auto;font-style:normal;font-size:.85em;background:var(--paper);border:2px solid var(--ink);border-radius:99px;padding:0 .4em}
+.koki-topping[aria-pressed="true"]{background:var(--w);transform:translateY(3px);box-shadow:0 0 0 var(--ink);outline:3px solid var(--ink);outline-offset:2px}
+.koki-topping.salah i{background:#ffe1e3;border-color:var(--merah)}
+.datab .mode-2 .data-anim .da-svg{max-height:31vh}
+.datab .mode-2 .koki-pizza .da-svg,.datab .mode-2 .koki-kiri .data-editor .da-svg{max-height:38vh}
+.datab .mode-4 .koki-pizza .da-svg,.datab .mode-4 .koki-kiri .data-editor .da-svg{max-height:25vh}
+.datab .mode-4 .koki-tiket{grid-template-columns:repeat(auto-fill,minmax(36px,1fr))}
+.datab .mode-4 .tiket small{display:none}
+@container (max-width:430px){.koki-isi{grid-template-columns:minmax(0,1fr)}}
+
+/* ---------- Lab 8. pizza lingkaran ---------- */
+.pie-lab{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:center}
+.pie-pizza .da-svg{max-height:62vh;border:0;background:transparent}
+.pie-sisi{display:flex;flex-direction:column;gap:10px;min-width:0}
+.pie-judul{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(15px,1.4vw,21px)}
+.pie-pita{display:flex;height:clamp(34px,4.6vh,48px);border:3px solid var(--ink);border-radius:10px;overflow:hidden;background:#fff}
+.pie-pita span{display:grid;place-items:center;box-shadow:inset -2px 0 var(--ink);font-weight:900;font-size:clamp(12px,1vw,16px);transition:width .2s;overflow:hidden;white-space:nowrap}
+.pie-pita span:last-child{border-right:0}
+.pie-pita .kosong{background:repeating-linear-gradient(45deg,#fff 0 6px,#eef2f8 6px 12px)}
+.pie-tabel table{width:100%;border-collapse:collapse;background:#fff;font-weight:800;font-size:clamp(14px,1.25vw,19px)}
+.pie-tabel th{background:#ffe08a}
+.pie-tabel th,.pie-tabel td{border:2.5px solid var(--ink);padding:.2em .45em;text-align:center}
+.pie-tabel td:first-child{text-align:left}
+.pie-tabel tr.jml td{background:var(--cream)}
+.lab .jenis-btn[aria-pressed="true"]{background:var(--w);outline:3px solid var(--ink);outline-offset:2px}
+/* 9. diagram garis */
+.garis2-lab .da-svg{max-height:100%;touch-action:none}
+.ruas{list-style:none;margin:.4em 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;font-weight:700;font-size:clamp(13px,1.1vw,16px)}
+.ruas li{border:2px solid #c9d6e8;border-radius:10px;padding:.1em .45em;background:#fff}
+.ruas li.naik{border-color:var(--hijau);background:#e7f8df}.ruas li.turun{border-color:var(--merah);background:#ffe1e3}
+/* 10. tabel frekuensi */
+.frek-lab{gap:10px}
+.frek-mentah{flex:none!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:6px;justify-content:center}
+.frek-angka{min-width:clamp(40px,3.6vw,56px);min-height:clamp(40px,3.6vw,56px);font-family:var(--display);font-weight:800;font-size:clamp(18px,1.8vw,28px);border:3px solid var(--ink);border-radius:12px;background:color-mix(in srgb,var(--w) 30%,#fff);box-shadow:0 3px 0 var(--ink);color:var(--ink);cursor:pointer;touch-action:manipulation}
+.frek-angka:disabled{opacity:.25;box-shadow:none;transform:translateY(3px);cursor:default}
+@media (max-width:900px){.pie-lab{grid-template-columns:minmax(0,1fr)}}

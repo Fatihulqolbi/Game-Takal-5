@@ -14,6 +14,11 @@ const MenaraAudio=(()=>{
     melodi:[[12,null,9,null,5,null,9,12,14,null,12,null,9,null,null,null],[14,null,9,null,5,null,9,14,17,null,14,null,12,null,null,null],
       [10,null,14,null,17,null,14,10,12,null,10,null,5,null,null,null],[7,null,12,null,16,null,14,12,10,null,9,null,7,null,null,null]]};
   const GENTING_UKUR={tempo:150,ukur:true,genting:true,akor:[[2,5,9],[-2,2,5],[0,4,7],[4,7,11]],bas:[73.42,58.27,65.41,82.41]};
+  /* LAGU BAB 4 (Penyajian Data): G mayor G–Em–C–D, pola marimba yang sama dengan Bab 3 tetapi melodi melompat seperti batang naik-turun */
+  const DATA={tempo:116,ukur:true,akor:[[7,11,14],[4,7,11],[0,4,7],[2,6,9]],bas:[98,82.41,65.41,73.42],
+    melodi:[[14,null,11,null,14,null,19,null,18,null,19,21,19,null,null,null],[16,null,11,null,16,null,19,null,23,null,21,null,19,null,null,null],
+      [12,null,16,null,19,null,16,12,14,null,16,null,12,null,null,null],[14,null,18,null,21,null,18,14,18,null,21,null,23,null,null,null]]};
+  const GENTING_DATA={tempo:146,ukur:true,genting:true,akor:[[4,7,11],[0,4,7],[2,6,9],[7,11,14]],bas:[82.41,65.41,73.42,98]};
   GENTING.genting=true;
   let desis,berikut=0;
   function suara(freq,t,dur,vol,type,ke){const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);if(ke)o.frequency.exponentialRampToValueAtTime(ke,t+dur);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(mus);o.start(t);o.stop(t+dur+.03);o.onended=()=>{o.disconnect();g.disconnect()}}
@@ -36,11 +41,11 @@ const MenaraAudio=(()=>{
     derau(t,.025,s%2?.05:.1,9000);                                                /* shaker */
     if(s%4===0||s===6)suara(L.bas[bar],t,.3,.42,'triangle');                       /* bas bulat */
     if(s%4===2)akor.forEach(n=>suara(hz(n),t,.12,.07,'sine'));                     /* akor di ketukan lepas */
-    const n=L.genting?akor[[0,1,2,1][s%4]]+12:UKUR.melodi[bar][s];
+    const n=L.genting?akor[[0,1,2,1][s%4]]+12:(L.melodi||UKUR.melodi)[bar][s];
     if(n!==null){suara(hz(n),t,L.genting?.08:.22,.2,'sine');suara(hz(n)*4,t,.05,.05,'sine')} /* marimba: nada dasar + ketukan kayu */
     if(s===14&&bar===3&&!L.genting)suara(1568,t,.08,.12,'square');
   }
-  function music(){if(!ctx||ctx.state!=='running'||paused||document.hidden||!config.music)return;const uk=config.lagu==='ukur',L=urgent?(uk?GENTING_UKUR:GENTING):(uk?UKUR:LAGU),d=60/L.tempo/4;
+  function music(){if(!ctx||ctx.state!=='running'||paused||document.hidden||!config.music)return;const uk=config.lagu==='ukur',dt=config.lagu==='data',L=urgent?(dt?GENTING_DATA:uk?GENTING_UKUR:GENTING):(dt?DATA:uk?UKUR:LAGU),d=60/L.tempo/4;
     if(berikut<ctx.currentTime)berikut=ctx.currentTime+.06;
     while(berikut<ctx.currentTime+.22){ketuk(step++,berikut,L);berikut+=d}}
   function play(name){if(!config.fx||!start())return;if(name==='tap')tone(650,.09,.18);if(name==='place'){tone(140,.16,.38,'sine',0,60);tone(650,.13,.18,'triangle',.06)}if(name==='perfect')[523,784,1047].forEach((f,i)=>tone(f,.25,.21,'triangle',i*.07));if(name==='good')[523,659,784,1047].forEach((f,i)=>tone(f,.28,.23,'triangle',i*.08));if(name==='bad'){tone(240,.45,.24,'sawtooth',0,90)}if(name==='quake'){tone(85,.65,.32,'triangle',0,38);tone(510,.16,.15,'square',.08);tone(680,.16,.15,'square',.28)}if(name==='tick')tone(1200,.08,.19,'sine');if(name==='count')tone(700,.2,.25,'triangle');if(name==='finish')[523,523,659,784,1047,1319].forEach((f,i)=>tone(f,.5,.25,'triangle',i*.16));}

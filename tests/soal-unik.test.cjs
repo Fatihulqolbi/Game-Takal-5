@@ -28,3 +28,10 @@ test('Laskar Pecahan: 30 soal pertama selalu berbeda',()=>{
   const ctx={console,Math};vm.createContext(ctx);vm.runInContext(fs.readFileSync(path.join(__dirname,'../js/soal.js'),'utf8')+';this.makeQuestion=makeQuestion',ctx);
   for(const topik of[[1],[2],[3],[4],[5],[6],[1,2,3,4,5,6]])for(let s=0;s<10;s++){const seen=new Set();for(let n=1;n<=30;n++)ctx.makeQuestion(topik,n,seen);assert.equal(seen.size,30,'bab '+topik.join(','))}
 });
+test('Penyajian Data: 40 soal pertama berbeda dan 4 pemain tidak pernah mendapat soal yang sama',()=>{
+  const D=require('../data/js/data-soal.js');
+  for(const j of['campur','batang','piktogram','tabel'])for(let lv=1;lv<=3;lv++)for(let s=1;s<=20;s++){
+    const d=D.dek((n,c)=>D.soal(s*101,n,lv,j,c)),k=new Set();for(let i=0;i<40;i++)k.add(D.kunciSoal(d.ambil(i)));assert.equal(k.size,40,`${j} L${lv} s${s}`)}
+  for(const j of['campur','tabel'])for(let lv=1;lv<=3;lv++)for(let s=1;s<=15;s++){const P=new Set(),deks=[0,1,2,3].map(i=>D.dek((n,c)=>D.soal(s*101+i*7717,n,lv,j,c),P)),k=new Set();
+    for(let n=0;n<12;n++)deks.forEach(d=>k.add(D.kunciSoal(d.ambil(n))));assert.equal(k.size,48,j+' L'+lv+' s'+s)}
+});

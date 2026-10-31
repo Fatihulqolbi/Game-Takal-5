@@ -36,7 +36,7 @@ Game ini hanya berupa file HTML, CSS, dan JavaScript biasa. Tidak perlu `npm ins
 
 1. Ekstrak file zip.
 2. Klik dua kali `index.html`. Buku **Jejak Mengajar** terbuka sebagai menu utama di browser (disarankan Chrome atau Edge).
-3. Buka Bab 1 untuk **Laskar Pecahan**, Bab 2 untuk **DIMENSIA**, atau Bab 3 untuk **Pengukuran**, lalu tekan **Main**.
+3. Buka Bab 1 untuk **Laskar Pecahan**, Bab 2 untuk **DIMENSIA**, Bab 3 untuk **Pengukuran**, atau Bab 4 untuk **Penyajian Data**, lalu tekan **Main**.
 
 Saat pertama dibuka, komputer perlu internet untuk mengambil library 3D (three.js) dan font. Kalau ingin bisa main tanpa internet, lihat bagian **Mode offline** di bawah.
 
@@ -56,6 +56,7 @@ Lalu buka `http://localhost:8000` di browser. Halaman awal langsung menampilkan 
 - **Bab 1 → Main:** Laskar Pecahan (`pecahan.html`).
 - **Bab 2 → Main:** DIMENSIA (`dimensia/index.html`).
 - **Bab 3 → Main:** Pengukuran (`pengukuran/index.html`).
+- **Bab 4 → Main:** Penyajian Data (`data/index.html`).
 
 Di menu masing-masing game, gunakan **Kembali ke buku** untuk kembali ke babnya.
 
@@ -191,8 +192,10 @@ Pemeriksaan pengembang (tanpa `npm install`):
 node --test tests/dimensia.test.cjs
 node --test tests/pengukuran.test.cjs
 node --test tests/soal-unik.test.cjs
+node --test tests/data.test.cjs
 node tests/browser-game.cjs
 node tests/browser-game.cjs --extra
+node tests/browser-data.cjs
 ```
 
 Tes browser menggunakan Chrome lokal dalam mode headless dan profil sementara. Atur `BROWSER_BIN` jika lokasi Chrome/Edge berbeda. Hasil tangkapan layar QA disimpan di `.qa/`.
@@ -241,6 +244,56 @@ pengukuran/
 ```
 
 Game Bab 3 memakai ulang renderer, suara, dan podium Kota Langit dari `dimensia/js/`, tetapi musiknya lagu khas sendiri (F mayor, bunyi marimba), berbeda dari musik Bab 1 dan Bab 2.
+
+## Bab 4: Penyajian Data
+
+`data/index.html` adalah menu Bab 4 (kisi-kisi TKA Matematika no. 26–30: diagram batang, piktogram, tabel, turus, tabel frekuensi, diagram lingkaran, dan diagram garis). Empat tokoh baru, masing-masing satu sajian data:
+
+| Tokoh | Wujud | Sajian |
+| --- | --- | --- |
+| **Bato** | tiga batang berdiri | diagram batang |
+| **Piko** | ubin ikon bertanda ×4 | piktogram |
+| **Tabi** | papan tabel berjepit | tabel |
+| **Turi** | empat garis tegak + satu miring | turus |
+
+Prinsipnya sama dengan "membelah bangun" di Bab 2: **diagramnya bisa dibongkar** supaya anak paham konsep, bukan hanya membaca angka.
+
+**Lab Data** (`data/lab.html`, tanpa waktu dan tanpa nilai), tiap mode punya tantangan kecil:
+
+1. **Benda jadi batang:** buah berserakan diseret ke kolomnya (banyak jari sekaligus), dirapikan jadi tumpukan, lalu berubah jadi batang. Tinggi batang = banyak benda.
+2. **Turus:** data datang satu per satu; ketuk jenisnya, lalu turus, tabel, dan diagram batang tumbuh bersamaan. Garis ke-5 dibuat miring.
+3. **Tabel frekuensi:** data mentah (nilai ulangan, ukuran sepatu, ...) diketuk satu per satu (banyak jari sekaligus); turus, frekuensi, dan batangnya tumbuh. Jumlah frekuensi = banyak data.
+4. **Bedah piktogram:** ketuk ikon, ikon pecah menjadi nilainya; skala 1 ikon = 1, 2, 4, 5, atau 10; setengah ikon = setengah nilai.
+5. **Garis bantu & skala:** ketuk batang untuk menarik garis ke sumbu; seret penggaris mendatar; ganti skala sumbu (tiap garis = 5, 10, 25, ...).
+6. **Potong & gabung:** pilih batang, lalu **potong** bagian yang lebih (selisih), **tumpuk** jadi menara (jumlah), **gandakan** batang pendek (berapa kali), atau tarik **garis batas**.
+7. **Pizza lingkaran:** pizza 10 atau 20 potong; pilih topping lalu ketuk/seret potongnya (banyak jari). Potong sejenis dirapikan berdampingan jadi diagram lingkaran; pita 100% dan tabel pecahan/persen ikut berubah.
+8. **Diagram garis:** seret titik; tombol "Lihat batangnya" menunjukkan tiap titik = ujung batang; "Bongkar naik-turun" menuliskan naik/turun tiap ruas.
+9. **Ubah sajian:** satu data, empat tampilan. Seret batang atau ubah angka tabel; piktogram dan turus ikut berubah.
+10. **Survei kelas** (`data/lab.html#survei`): murid mengetuk pilihannya langsung di TV (beberapa jari sekaligus), diagram terbentuk seketika, lalu soal dibuat dari data kelas sendiri.
+
+**Lomba Data** (`data/lomba.html`), 1, 2, atau 4 pemain dengan layar terbagi, pola sama dengan Lompat Tangga (pilih tokoh, persiapan, podium 3D, Soal & Pembahasan yang bisa diunduh):
+
+- **Detektif Data** (`lomba.html?mode=detektif`): kuis cepat. Sajian campur, batang, piktogram, tabel, turus, tabel frekuensi, diagram lingkaran (persen, pecahan, gabungan, bagian hilang), atau diagram garis (baca titik, kenaikan terbesar). Bentuk soal PG, **PGK MCMA** (pilih semua yang benar), dan **PGK Kategori** (benar/salah). Tingkat Pemula (baca, terbanyak, selisih), Penjelajah (jumlah, skala, garis batas, tabel ke diagram), Ahli Data (berapa kali, data hilang, pernyataan PGK).
+- **Koki Data** (`lomba.html?mode=koki`): tiap ronde satu pesanan. (1) Ketuk kertas pesanan untuk mencoret, isi tabel dengan tombol ±; (2) sajikan: warnai pizza 20 potong jadi diagram lingkaran, atau seret gelas jus jadi diagram batang; (3) jawab pertanyaan pelanggan tentang diagram itu. Tiap langkah tepat = poin.
+- Setelah menjawab, kartu pembahasan **memutar animasi yang sama dengan Lab** (garis bantu, potong selisih, tumpuk jumlah, bedah ikon, garis batas, lingkaran dibuka jadi kolom 100%, naik-turun garis), lalu menuliskan langkahnya.
+- Semua tombol dan seretan memakai pointer per jari, jadi empat anak bisa menekan atau menyeret bersamaan di TV layar sentuh.
+
+```
+data/
+├── index.html          Menu Bab 4: diagram batang 3D dan empat tokoh
+├── lab.html            Lab Data (10 mode) dan Survei Kelas
+├── lomba.html          Detektif Data dan Koki Data (1, 2, atau 4 pemain)
+├── css/data.css        Tambahan tampilan (tema dari ../css/style.css, arena Kota Langit, Lab Pengukuran)
+└── js/
+    ├── data-soal.js    Data acak, gambar sajian SVG, pembuat soal PG/MCMA/Kategori, resep animasi (tanpa DOM, diuji Node)
+    ├── data-anim.js    Papan diagram yang bisa dibongkar + editor batang/garis dan pizza multi-sentuh
+    ├── tokoh-data.js   Tokoh 3D Bato, Piko, Tabi, Turi
+    ├── data-scene.js   Adegan 3D menu dan arena (diagram batang 3D mengikuti data soal)
+    ├── data-lab.js     Alur Lab
+    └── lomba-data.js   Alur game lomba
+```
+
+Bab 4 memakai ulang renderer, suara, dan podium Kota Langit, dengan lagu khas sendiri (G mayor).
 
 ## Teknologi
 

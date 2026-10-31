@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Lab Data: bongkar diagram batang, diagram lingkaran, diagram garis, piktogram, tabel, tabel frekuensi, dan turus. Potong pizza jadi diagram lingkaran, seret titik diagram garis, potong selisih, tumpuk jumlah, bedah ikon, dan survei kelas langsung di layar sentuh.">
+<meta name="theme-color" content="#9fdcff">
+<title>Lab Data - Penyajian Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../dimensia/css/menara.css">
+<link rel="stylesheet" href="../dimensia/css/kado.css">
+<link rel="stylesheet" href="../pengukuran/css/ukur.css">
+<link rel="stylesheet" href="css/data.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body class="kota kado ukur lab datab">
+<section class="lab-layar">
+  <header class="lab-atas">
+    <a class="small-btn" href="index.html">‹ Menu</a>
+    <h1>Lab <span>Data</span></h1>
+    <div class="row"><button class="small-btn" id="suara" aria-pressed="true">Suara nyala</button><button class="small-btn" id="fsBtn">Layar penuh</button></div>
+  </header>
+  <nav class="chips lab-tab" role="tablist" aria-label="Pilih kegiatan">
+    <button class="chip" role="tab" data-tab="rapikan"><i class="bato-dot"></i>Benda jadi batang</button>
+    <button class="chip" role="tab" data-tab="turus"><i class="turi-dot"></i>Turus</button>
+    <button class="chip" role="tab" data-tab="frekuensi"><i class="turi-dot"></i>Tabel frekuensi</button>
+    <button class="chip" role="tab" data-tab="pikto"><i class="piko-dot"></i>Bedah piktogram</button>
+    <button class="chip" role="tab" data-tab="garis"><i class="bato-dot"></i>Garis bantu &amp; skala</button>
+    <button class="chip" role="tab" data-tab="potong"><i class="bato-dot"></i>Potong &amp; gabung</button>
+    <button class="chip" role="tab" data-tab="lingkaran"><i class="piko-dot"></i>Pizza lingkaran</button>
+    <button class="chip" role="tab" data-tab="dgaris"><i class="bato-dot"></i>Diagram garis</button>
+    <button class="chip" role="tab" data-tab="sajian"><i class="tabi-dot"></i>Ubah sajian</button>
+    <button class="chip" role="tab" data-tab="survei"><i class="piko-dot"></i>Survei kelas</button>
+  </nav>
+  <div class="lab-isi">
+    <div class="lab-panggung data-panggung">
+      <div id="panggung" class="data-isi"></div>
+      <div id="papan" class="pesanan-tag papan-nilai"></div>
+      <div id="ucap" class="robot-bubble data-ucap" role="status"></div>
+    </div>
+    <aside class="lab-panel" id="panel"></aside>
+  </div>
+</section>
+
+<script src="../dimensia/js/menara-audio.js"></script><script>const ROBOT=[{nama:'Bato',warna:'#FF6B6B'},{nama:'Piko',warna:'#FF8CC6'},{nama:'Tabi',warna:'#3CC8B4'},{nama:'Turi',warna:'#9B7BFF'}]</script>
+<script src="js/data-soal.js"></script><script src="js/data-anim.js"></script><script src="js/data-lab.js"></script><script src="../js/transisi-buku.js"></script>
+</body>
+</html>
