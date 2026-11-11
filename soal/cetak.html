@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lembar Soal TKA</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+@page{size:A4 landscape;margin:14mm}
+body{margin:0;font:12pt/1.45 "Nunito","Segoe UI",system-ui,sans-serif;color:#111;background:#eef2f6}
+.alat{position:sticky;top:0;display:flex;gap:10px;align-items:center;padding:10px 16px;background:#1e2a4a;color:#fff;font-weight:700}
+.alat button{font:inherit;font-weight:800;padding:.3em 1em;border-radius:10px;border:0;background:#ffc93c;color:#1e2a4a;cursor:pointer}
+.kertas{background:#fff;width:297mm;margin:12px auto;padding:14mm}
+.kop{display:flex;justify-content:space-between;gap:12px;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px;font-weight:800}
+.kop span{font-weight:600}
+.cerita{border:1.5px solid #111;border-radius:6px;padding:6px 10px;margin-bottom:10px}
+.cerita b{display:block}
+.butir{margin:0 0 12px;break-inside:avoid}
+.q{white-space:pre-line}
+.q .n{display:inline-block;min-width:1.7em;text-align:center;border:1.5px solid #111;border-radius:50%;font-weight:800;margin-right:.4em}
+.butir img{display:block;max-width:100%;max-height:60mm;margin:6px 0;border:1px solid #bbb;border-radius:4px}
+.bag{margin:6px 0 0 2em}
+.bag .garis{display:inline-block;min-width:35mm;border-bottom:1.5px solid #111;margin:0 .4em}
+.bag ul{list-style:none;margin:2px 0;padding:0}
+.bag li::before{content:"○ ";}
+table{border-collapse:collapse;margin:2px 0}
+th,td{border:1.5px solid #111;padding:2px 8px;text-align:left}
+th.p,td.p{text-align:center;width:22mm}
+/* mode coret-coret: satu butir per lembar landscape, soal di kiri dan area coret di kanan */
+body.coret .kertas{height:182mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:0 8mm;overflow:hidden;break-after:page}
+body.coret .kop{grid-column:1/-1}
+body.coret .kiri{min-height:0;overflow:hidden}
+body.coret .coret-area{border:2px dashed #888;border-radius:8px;padding:6px 10px;color:#888;font-size:10pt}
+@media print{
+  body{background:#fff}.alat{display:none}
+  .kertas{margin:0;padding:0;width:auto}
+  body.coret .kertas:last-child{break-after:auto}
+}
+</style>
+</head>
+<body>
+<div class="alat"><span>Pratinjau lembar soal.</span><button id="cetak">Cetak / Simpan sebagai PDF</button></div>
+<div id="isi"></div>
+<script src="js/soal-core.js"></script>
+<script src="js/ui.js"></script>
+<script>
+muatPaket(P=>{
+  const C=SoalCore,mode=new URLSearchParams(location.search).get('mode')==='coret'?'coret':'hemat',L=C.datar(P);
+  document.title='Lembar Soal TKA - '+P.nama;document.body.classList.add(mode);
+  const kop=()=>h('div',{class:'kop'},h('div',null,'Soal TKA Matematika SD · '+P.nama),h('span',null,'Nama: ____________________   Kelas: ______'));
+  const cerita=s=>h('div',{class:'cerita'},h('b',null,s.judul),s.teks);
+  function butir(b){
+    return h('div',{class:'butir'},
+      h('div',{class:'q'},h('span',{class:'n'},b.huruf),b.teks),
+      b.gambar&&h('img',{src:b.gambar,alt:b.alt||''}),
+      b.bagian.map(g=>{
+        if(g.kind==='angka')return h('div',{class:'bag'},g.label+': ',g.prefix||'',h('span',{class:'garis'}),g.unit||'');
+        if(g.kind==='pg')return h('div',{class:'bag'},g.label+':',h('ul',null,g.opsi.map((o,k)=>h('li',null,C.HURUF[k].toUpperCase()+'. '+o))));
+        return h('div',{class:'bag'},h('table',null,h('tr',null,h('th',null,'Pernyataan'),h('th',{class:'p'},'Benar'),h('th',{class:'p'},'Salah')),
+          g.baris.map(r=>h('tr',null,h('td',null,r.teks),h('td',{class:'p'},'○'),h('td',{class:'p'},'○')))));
+      }));
+  }
+  const root=document.getElementById('isi');
+  if(mode==='coret')L.forEach(b=>root.append(h('div',{class:'kertas'},kop(),h('div',{class:'kiri'},cerita(b.soal),butir(b)),h('div',{class:'coret-area'}))));
+  else root.append(h('div',{class:'kertas'},kop(),P.soal.map(s=>[cerita(s),L.filter(b=>b.soal===s||b.soal.judul===s.judul).map(butir)])));
+  document.getElementById('cetak').addEventListener('click',()=>print());
+  /* buka dialog cetak otomatis setelah semua gambar siap */
+  Promise.all([...document.images].map(im=>im.complete?1:new Promise(r=>{im.onload=im.onerror=r}))).then(()=>setTimeout(()=>print(),300));
+});
+</script>
+</body>
+</html>

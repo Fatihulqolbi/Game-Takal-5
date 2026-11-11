@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Soal TKA Matematika SD: latihan dan try out dengan timer, navigasi soal, skor, dan pembahasan.">
+<meta name="theme-color" content="#9fdcff">
+<title>Soal TKA - Jejak Mengajar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap">
+<link rel="stylesheet" href="css/soal.css">
+<link rel="stylesheet" href="../css/transisi-buku.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="judul">
+    <h1>Soal <span>TKA</span></h1>
+    <p>Matematika SD · latihan dan try out</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="btn tab" role="tab" id="tabLatihan" aria-selected="true" aria-controls="pLatihan">Latihan</button>
+    <button class="btn tab" role="tab" id="tabTO" aria-selected="false" aria-controls="pTO" disabled>Try Out <small>segera</small></button>
+  </div>
+
+  <section class="panel" id="pLatihan" role="tabpanel" aria-labelledby="tabLatihan">
+    <h2>Latihan</h2>
+    <p>Kerjakan dengan santai. Skor dan pembahasan muncul setelah kamu menekan <b>Selesai</b>.</p>
+    <div id="daftar" class="pilih"></div>
+  </section>
+
+  <section class="panel" id="pTO" role="tabpanel" aria-labelledby="tabTO" hidden>
+    <h2>Try Out</h2>
+    <div class="nanti">Segera hadir.</div>
+  </section>
+
+  <p class="balik"><a class="btn" href="../index.html#6" data-book-return>Kembali ke buku</a></p>
+</main>
+
+<dialog id="dlgPdf">
+  <h3>Unduh lembar soal (PDF)</h3>
+  <p id="pdfNama">Pilih bentuk lembarnya.</p>
+  <div class="pilih">
+    <a class="btn" id="pdfCoret" target="_blank" rel="noopener">Coret-coret<small>1 butir per lembar, ruang kosong luas untuk mencoret</small></a>
+    <a class="btn" id="pdfHemat" target="_blank" rel="noopener">Hemat kertas<small>Soal lengkap, beberapa butir per lembar</small></a>
+  </div>
+  <div class="aksi"><button class="btn kecil" id="pdfTutup">Tutup</button></div>
+</dialog>
+
+<script src="data/latihan-1.js"></script>
+<script src="js/soal-core.js"></script>
+<script>
+(()=>{
+  const daftar=document.getElementById('daftar'),dlg=document.getElementById('dlgPdf');
+  for(const p of Object.values(SOAL_PAKET).filter(p=>p.jenis==='latihan')){
+    const n=SoalCore.datar(p).length,row=document.createElement('div');row.className='paket';
+    row.innerHTML='<a class="btn besar utama" href="ujian.html?p='+p.id+'"><span>'+p.nama+'<small>'+n+' butir · '+p.ket+'</small></span><span aria-hidden="true">▸</span></a>'+
+      '<button class="btn" data-pdf="'+p.id+'" aria-label="Unduh PDF '+p.nama+'">⬇ PDF</button>';
+    daftar.appendChild(row);
+  }
+  daftar.addEventListener('click',e=>{
+    const b=e.target.closest('[data-pdf]');if(!b)return;
+    const p=SOAL_PAKET[b.dataset.pdf];
+    document.getElementById('pdfNama').textContent=p.nama+' · '+p.ket;
+    document.getElementById('pdfCoret').href='cetak.html?p='+p.id+'&mode=coret';
+    document.getElementById('pdfHemat').href='cetak.html?p='+p.id+'&mode=hemat';
+    dlg.showModal();
+  });
+  document.getElementById('pdfTutup').addEventListener('click',()=>dlg.close());
+  dlg.addEventListener('click',e=>{if(e.target===dlg||e.target.closest('a'))dlg.close()});
+})();
+</script>
+<script src="../js/transisi-buku.js"></script>
+</body>
+</html>
